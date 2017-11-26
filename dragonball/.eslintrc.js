@@ -22,6 +22,11 @@ module.exports = {
     // allow async-await
     'generator-star-spacing': 0,
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    // 添加规则
+    // 允许以分号结尾
+    'semi': [0],
+    //空行最多不能超过100行
+    "no-multiple-empty-lines": [0, {"max": 100}],
   }
 }
