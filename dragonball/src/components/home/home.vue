@@ -17,7 +17,7 @@
     <div class="home-searcher">
         <div class="home-searcher-wrapper">
             <img class="home-searcher-img" src="./../../assets/images/home/searcher.png" alt="">
-            <p class="home-searcher-words">滑动开始冒险</p>
+            <p class="home-searcher-words" @click="toExplain">滑动开始冒险</p>
         </div>
     </div>
   </div>
@@ -30,6 +30,12 @@ export default {
   },
   created: function() {
 
+  },
+  methods: {
+    // 页面跳转
+    toExplain () {
+      this.$router.push('/explain');
+    }
   }
 };
 </script>

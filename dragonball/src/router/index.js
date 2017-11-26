@@ -20,6 +20,13 @@ export default new Router({
           component (reslove) {
             require(['./../components/home/home.vue'], reslove);
           }
+        },
+        {
+          path: 'explain',
+          name: 'explain',
+          component (reslove) {
+            require(['./../components/explain/explain.vue'], reslove);
+          }
         }
       ]
     }
