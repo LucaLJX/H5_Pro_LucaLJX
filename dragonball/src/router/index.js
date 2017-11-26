@@ -12,7 +12,16 @@ export default new Router({
       name: 'layout',
       component (reslove) {
         require(['./../components/layout.vue'], reslove);
-      }
+      },
+      children: [
+        {
+          path: 'home',
+          name: 'home',
+          component (reslove) {
+            require(['./../components/home/home.vue'], reslove);
+          }
+        }
+      ]
     }
   ]
 })
