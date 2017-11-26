@@ -6,6 +6,17 @@
 
 <script>
 export default {
+  data () {
+    return {
+
+    }
+  },
+  created: function () {
+    let _path = this.$route.path;
+    if (_path.length === 1) {
+      this.$router.push('home');
+    }
+  }
 }
 </script>
 
