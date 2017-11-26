@@ -26,7 +26,9 @@ module.exports = {
     // 添加规则
     // 允许以分号结尾
     'semi': [0],
-    //空行最多不能超过100行
+    // 空行最多不能超过100行
     "no-multiple-empty-lines": [0, {"max": 100}],
+    // 关闭function的（）之间必须加空格的校验
+    "space-before-function-paren": [0],
   }
 }
