@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import store from './store/store.js'
 export default {
   data () {
     return {
@@ -16,6 +17,7 @@ export default {
     if (_path.length === 1) {
       this.$router.push('home');
     }
+    console.log(store.state.count)
   }
 }
 </script>
