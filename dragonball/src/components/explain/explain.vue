@@ -32,7 +32,8 @@ export default {
   methods: {
     // 页面跳转
     toDragonMap () {
-
+      let _this = this;
+      _this.$router.push('map');
     }
   }
 }

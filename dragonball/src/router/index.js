@@ -27,6 +27,13 @@ export default new Router({
           component (reslove) {
             require(['./../components/explain/explain.vue'], reslove);
           }
+        },
+        {
+          path: 'map',
+          name: 'map',
+          component (reslove) {
+            require(['./../components/map/map.vue'], reslove);
+          }
         }
       ]
     }
