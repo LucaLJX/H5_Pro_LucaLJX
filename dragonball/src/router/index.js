@@ -41,6 +41,13 @@ export default new Router({
           component (reslove) {
             require(['./../components/capsule/capsule.vue'], reslove);
           }
+        },
+        {
+          path: 'question',
+          name: 'question',
+          component (reslove) {
+            require(['./../components/question/question.vue'], reslove);
+          }
         }
       ]
     }
