@@ -28,8 +28,8 @@
                 optionCheckDetail[index].isChecked ? 'question-content-checked' : 'question-content-unchecked'
               ]" @click="selectItem(index)">
                 <p class="question-content-option-word" :class="[item.length <= 20 ? 'question-content-option-word-1' : 'question-content-option-word-2']">{{ item }}</p>
-                <img v-if="promptOption === (index + 1) && capsuleUsed === 1" class="question-content-option-img" src="./../../assets/images/question/yes.png" alt="">
-                <img v-if="promptOption === (index + 1) && capsuleUsed === 2" class="question-content-option-img" src="./../../assets/images/question/wrong.png" alt="">
+                <img v-if="promptOptionA === (index + 1) && capsuleAused === true" class="question-content-option-img" src="./../../assets/images/question/yes.png" alt="">
+                <img v-if="promptOptionB === (index + 1) && capsuleBused === true" class="question-content-option-img" src="./../../assets/images/question/wrong.png" alt="">
               </div>
             </div>
           </div>
@@ -333,9 +333,12 @@ export default {
       capsuleTypeA: true,
       capsuleTypeB: true,
       // 使用的胶囊
+      capsuleAused: false,
+      capsuleBused: false,
       capsuleUsed: null,
       // 提示的选项
-      promptOption: null,
+      promptOptionA: null,
+      promptOptionB: null,
       // 提示是否使用胶囊编号
       isUseCapsuleType: null,
       // 报错
@@ -393,8 +396,10 @@ export default {
       }
       // 换下一题
       // 清空提示
-      _this.capsuleUsed = null;
-      _this.promptOption = null;
+      _this.capsuleAused = false;
+      _this.capsuleBused = false;
+      _this.promptOptionA = null;
+      _this.promptOptionB = null;
       if (_this.questionIndex === 4) {
         // 这里该跳转了
         console.log(_this.answeredDetail);
@@ -442,8 +447,8 @@ export default {
       let rightAnswerArr = rightAnswer.split('');
       let arrLength = rightAnswerArr.length;
       let showIndex = Math.floor(Math.random() * arrLength);
-      _this.promptOption = parseInt(rightAnswerArr[showIndex]);
-      _this.capsuleUsed = 1;
+      _this.promptOptionA = parseInt(rightAnswerArr[showIndex]);
+      _this.capsuleAused = true
       _this.capsuleTypeA = false;
     },
     // 提示一个错误答案
@@ -459,8 +464,8 @@ export default {
         }
       }
       let showIndex = Math.floor(Math.random() * allArr.length);
-      _this.promptOption = parseInt(allArr[showIndex]);
-      _this.capsuleUsed = 2;
+      _this.promptOptionB = parseInt(allArr[showIndex]);
+      _this.capsuleBused = true;
       _this.capsuleTypeB = false;
     },
     // 关闭提示
