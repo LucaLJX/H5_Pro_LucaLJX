@@ -7,13 +7,21 @@
     <p id="capsule-title-word-1" class="capsule-title-word">联想ThinkCloud</p>
     <p id="capsule-title-word-2" class="capsule-title-word">OpenStack企业版</p>
     <!-- 标题--球 -->
-    <img class="capsule-title-ball" src="./../../assets/images/capsule/ball-1-a.png" alt="">
-    <img class="capsule-title-ball" src="./../../assets/images/capsule/ball-1-a.png" alt="">
-    <img class="capsule-title-ball" src="./../../assets/images/capsule/ball-1-a.png" alt="">
+    <img v-if="$store.state.starIndex === 1" class="capsule-title-ball" src="./../../assets/images/capsule/ball-1-a.png" alt="">
+    <img v-if="$store.state.starIndex === 2" class="capsule-title-ball" src="./../../assets/images/capsule/ball-1-a.png" alt="">
+    <img v-if="$store.state.starIndex === 3" class="capsule-title-ball" src="./../../assets/images/capsule/ball-1-a.png" alt="">
     <!-- content -->
     <div class="capsule-content">
       <div class="capsule-content-wrapper">
         <img class="capsule-content-img" src="./../../assets/images/capsule/content-bg.png" alt="">
+        <div class="capsule-content-words">
+          OpenStack云平台
+          云计算技术经过多年的发展和进化，OpenStack架构逐步
+          占据了绝对主流的地位。企业级的OpenStack解决方案是
+          指在社区版本之上进行了企业级开发，专门用于私有云和
+          混合云的应用场景，提供计算虚拟化SDC、存储虚拟化SDS
+          网络虚拟化SDN、云运维和云安全等功能。
+        </div>
       </div>
     </div>
     <!-- 标题-2 -->
@@ -41,6 +49,10 @@ export default {
     return {
       store: $store
     }
+  },
+  created: function () {
+  },
+  mounted: function () {
   },
   methods: {
     toQuestion () {
@@ -104,6 +116,17 @@ content
 .capsule-content-wrapper {
   width: 100%;
   height: 100%;
+  position: relative;
+}
+.capsule-content-words {
+  width: 5rem;
+  font-size: .2rem;
+  color: #fff;
+  position: absolute;
+  left: 50%;
+  margin-left: -2.3rem;
+  top: .3rem;
+  line-height: .3rem;
 }
 .capsule-content-img {
   width: 100%;

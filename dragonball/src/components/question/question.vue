@@ -96,6 +96,7 @@
 
 <script>
 import $store from './../store/store.js';
+import $axios from 'axios';
 export default {
   data () {
     return {
@@ -106,7 +107,7 @@ export default {
           title: 'star-1',
           questions: [
             {
-              questionNo: '1-1',
+              questionNo: 1,
               question: '云计算三层架构是指：（多选）',
               options: [
                 'A、IAAS',
@@ -117,7 +118,7 @@ export default {
               answer: 134
             },
             {
-              questionNo: '1-2',
+              questionNo: 2,
               question: '在云计算中IAAS层指的是：',
               options: [
                 'A、平台即服务',
@@ -128,7 +129,7 @@ export default {
               answer: 3
             },
             {
-              questionNo: '1-3',
+              questionNo: 3,
               question: '云计算体系架构中的安全管理包括：（多选）',
               options: [
                 'A、身份认证',
@@ -139,7 +140,7 @@ export default {
               answer: 124
             },
             {
-              questionNo: '1-4',
+              questionNo: 4,
               question: '云计算技术优势主要体现在哪些方面：（多选）',
               options: [
                 'A、设备数量',
@@ -150,7 +151,7 @@ export default {
               answer: 123
             },
             {
-              questionNo: '1-5',
+              questionNo: 5,
               question: '分布式存储的特性包括：（多选）',
               options: [
                 'A、横向扩展性强',
@@ -167,7 +168,7 @@ export default {
           title: 'star-2',
           questions: [
             {
-              questionNo: '2-1',
+              questionNo: 1,
               question: '云管理平台是一种管理各种云环境的整合性方案产品，其最小的功能范围应该包括自服务界面、创建系统镜像、监控和账单，以及基于策略的一定程度的负载优化等功能。业界云管平台英文缩写应该是哪一个？',
               options: [
                 'A、MPM',
@@ -178,7 +179,7 @@ export default {
               answer: 2
             },
             {
-              questionNo: '2-2',
+              questionNo: 2,
               question: '云管平台可以实现多种异构虚拟化和云平台资源环境的一体化管理和运维，以下哪项不被云管实现纳管？',
               options: [
                 'A、物理机资源池',
@@ -189,7 +190,7 @@ export default {
               answer: 4
             },
             {
-              questionNo: '2-3',
+              questionNo: 3,
               question: '云管理平台的设计目标是：（多选）',
               options: [
                 'A、资源一体化监管',
@@ -200,7 +201,7 @@ export default {
               answer: 1234
             },
             {
-              questionNo: '2-4',
+              questionNo: 4,
               question: '云管平台概念的误区是？',
               options: [
                 'A、云管平台负责对云平台的管理职责',
@@ -211,7 +212,7 @@ export default {
               answer: 2
             },
             {
-              questionNo: '2-5',
+              questionNo: 5,
               question: '云管平台需要实现的基本关键功能包括有：（多选）',
               options: [
                 'A、快捷部署',
@@ -228,7 +229,7 @@ export default {
           title: 'star-3',
           questions: [
             {
-              questionNo: '3-1',
+              questionNo: 1,
               question: '那一项不是服务器虚拟化技术或者产品：',
               options: [
                 'A、KVM',
@@ -239,7 +240,7 @@ export default {
               answer: 4
             },
             {
-              questionNo: '3-2',
+              questionNo: 2,
               question: '采用国产虚拟化技术方案的驱动力有：（多选）',
               options: [
                 'A、降低采购和运维成本',
@@ -250,7 +251,7 @@ export default {
               answer: 1234
             },
             {
-              questionNo: '3-3',
+              questionNo: 3,
               question: '哪项不是虚拟化主要功能点：',
               options: [
                 'A、集群高可用（HA）',
@@ -261,7 +262,7 @@ export default {
               answer: 4
             },
             {
-              questionNo: '3-4',
+              questionNo: 4,
               question: '以下哪项是对虚拟机的最佳描述：',
               options: [
                 'A、执行虚拟化软件测试程序的物理机',
@@ -272,7 +273,7 @@ export default {
               answer: 2
             },
             {
-              questionNo: '3-5',
+              questionNo: 5,
               question: '虚拟化的Hypervisor分为那两种架构：（多选）',
               options: [
                 'A、裸金属架构',
@@ -403,6 +404,29 @@ export default {
       } else {
         _this.answeredDetail[_this.questionIndex].isRight = false;
       }
+      // 提交答案
+      let paperId = _this.$store.state.starIndex;
+      let questionId = _this.questionIndex;
+      let splitKey = _this.$store.state.splitKey;
+      let answerStatus = _this.answer === rightAnswer ? '1' : '0';
+      let optionId = _this.answer;
+      let recordUser = _this.$store.state.openid;
+      $axios.post(_this.$store.state.host + 'answerRecord/', [{
+        answerRecords: {
+          paperId: paperId,
+          questionId: questionId,
+          splitKey: splitKey,
+          answerStatus: answerStatus,
+          optionId: optionId,
+          recordUser: recordUser
+        }
+      }])
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
       // 换下一题
       // 清空提示
       _this.capsuleAused = false;

@@ -24,12 +24,14 @@
 </template>
 
 <script>
+import $store from './../store/store.js';
 export default {
   data() {
-    return {};
+    return {
+      store: $store
+    };
   },
   created: function() {
-
   },
   methods: {
     // 页面跳转

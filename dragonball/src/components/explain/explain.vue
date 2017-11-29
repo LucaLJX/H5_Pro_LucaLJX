@@ -24,10 +24,11 @@
 </template>
 
 <script>
+import $store from './../store/store.js';
 export default {
   data () {
     return {
-
+      store: $store
     }
   },
   created: function () {
@@ -37,7 +38,12 @@ export default {
     // 页面跳转
     toDragonMap () {
       let _this = this;
-      _this.$router.push('map');
+      if (_this.store.state.allFinish) {
+        alert('您已全部答完');
+        _this.$router.push('home');
+      } else {
+        _this.$router.push('map');
+      }
     }
   }
 }
