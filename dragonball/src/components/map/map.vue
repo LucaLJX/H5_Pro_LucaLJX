@@ -45,6 +45,24 @@
         </div>
       </div>
     </div>
+    <!-- 弹出框--报错--需要选择选项才可以下一题 -->
+    <div class="question-modal" v-if="wrongModal">
+      <div class="question-modal-container">
+        <div class="question-modal-border">
+          <div class="question-modal-wrapper">
+            <div class="question-modal-content-2">
+              <p v-if="tooSmall === true" class="question-modal-content-2-word">您已探索过{{ clickIndexStr }}星珠，请探索{{ starNextStr }}星珠。</p>
+              <p v-if="tooBig === true" class="question-modal-content-2-word">请先探索{{ starNextStr }}星珠。</p>
+            </div>
+            <div class="question-modal-bottom">
+              <div class="question-modal-btn-2" @click="closeWrongModal()">
+                <p class="question-modal-btn-word">确定</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -55,23 +73,27 @@ export default {
     return {
       store: $store,
       starStr: '',
-      starNextStr: ''
+      starNextStr: '',
+      wrongModal: false,
+      tooBig: false,
+      tooSmall: false,
+      clickIndexStr: ''
     }
   },
   created: function () {
     let _this = this;
     switch (_this.store.state.starIndex) {
       case 1:
+        _this.starStr = '零';
+        _this.starNextStr = '一';
+        break;
+      case 2:
         _this.starStr = '一';
         _this.starNextStr = '二';
         break;
-      case 2:
+      case 3:
         _this.starStr = '二';
         _this.starNextStr = '三';
-        break;
-      case 3:
-        _this.starStr = '三';
-        _this.starNextStr = '四';
         break;
     }
   },
@@ -79,13 +101,43 @@ export default {
     toCapsule (index) {
       let _this = this;
       let _index = index;
+      switch (_index) {
+        case 1:
+          _this.clickIndexStr = '一';
+          break;
+        case 2:
+          _this.clickIndexStr = '二';
+          break;
+        case 3:
+          _this.clickIndexStr = '三';
+          break;
+        case 4:
+          _this.clickIndexStr = '四';
+          break;
+        case 5:
+          _this.clickIndexStr = '五';
+          break;
+        case 6:
+          _this.clickIndexStr = '六';
+          break;
+        case 7:
+          _this.clickIndexStr = '七';
+      }
       if (_index === _this.store.state.starIndex) {
         _this.$router.push('capsule');
       } else if (_index < _this.store.state.starIndex) {
-        alert('您已答过题');
+        _this.tooSmall = true;
+        _this.wrongModal = true;
       } else if (_index > _this.store.state.starIndex) {
-        alert('请答完' + _this.store.state.starIndex + '星题');
+        _this.tooBig = true;
+        _this.wrongModal = true;
       }
+    },
+    closeWrongModal () {
+      let _this = this;
+      _this.wrongModal = false;
+      _this.tooBig = false;
+      _this.tooSmall = false;
     }
   }
 }
@@ -429,5 +481,90 @@ hand
 .map-master-words-3 {
   font-size: .3rem;
   color: #ffb932;
+}
+/**
+Modal样式
+*/
+.question-modal {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0rem;
+  z-index: 8888;
+}
+.question-modal-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.question-modal-border {
+  width: 5.6rem;
+  min-height: 2.5rem;
+  border: .02rem solid #fff;
+  position: absolute;
+  left: 50%;
+  margin-left: -2.8rem;
+  top: 3rem;
+  background-color: rgba(0, 0, 0, .9);
+  border-radius: .2rem;
+}
+.question-modal-wrapper {
+  width: 100%;
+  min-height: 2.5rem;
+  position: relative;
+}
+.question-modal-content {
+  padding-bottom: .65rem;
+}
+.question-modal-content-img {
+  width: .8rem;
+  height: .8rem;
+  margin-left: 2.4rem;
+  margin-top: .3rem;
+  margin-bottom: .2rem;
+}
+.question-modal-content-word {
+  text-align: center;
+  color: #fff;
+  font-size: .26rem;
+}
+.question-modal-bottom {
+  z-index: 9999;
+  height: .65rem;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+.question-modal-btn {
+  width: 1.7rem;
+  height: .48rem;
+  border: .02rem solid #ff9348;
+  border-radius: .24rem;
+  float: left;
+  margin-left: .68rem;
+  
+}
+.question-modal-btn-word {
+  text-align: center;
+  line-height: .48rem;
+  height: .48rem;
+  color: #fff;
+  font-size: .26rem;
+}
+.question-modal-content-2 {
+  width: 100%;
+  position: absolute;
+  top: .6rem;
+  text-align: center;
+  color: #fff;
+  font-size: .26rem;
+}
+.question-modal-btn-2 {
+  width: 1.7rem;
+  height: .48rem;
+  border: .02rem solid #ff9348;
+  border-radius: .24rem;
+  float: left;
+  margin-left: 1.8rem;
 }
 </style>
