@@ -9,6 +9,10 @@
         <img class="explain-master-img" src="./../../assets/images/explain/master.png" alt="">
         <!-- 龟仙人名字 -->
         <h3 class="explain-master-name">龟仙人</h3>
+        <!-- 文字 -->
+        <div class="explain-master-words-wrapper">
+          <p class="explain-master-words">年轻人，想成为一个合格的IT人，必须从头到脚每一个细胞都充满了技术范，想要不被时代淘汰，就从神龙试炼开始吧。</p>
+        </div>
         <!-- 按钮 -->
         <div class="explain-master-btn" @click="toDragonMap">
           <p class="explain-master-btn-words">去搜寻龙珠</p>
@@ -106,6 +110,22 @@ export default {
   border-left: .18rem solid #ff9348;
   margin-top: .12rem;
   margin-left: .12rem;
+}
+/**
+介绍文字
+*/
+.explain-master-words-wrapper {
+  width: 5.6rem;
+  position: absolute;
+  top: 3.8rem;
+  left: 50%;
+  margin-left: -2.8rem;
+}
+.explain-master-words {
+  color: #fff;
+  font-family: "FZLTZCHK-GBK1-0", "Microsoft YaHei", Georgia, Serif;
+  line-height: .4rem;
+  font-size: .28rem;
 }
 </style>
 
