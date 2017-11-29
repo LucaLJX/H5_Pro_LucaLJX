@@ -124,6 +124,10 @@ export default {
           _this.clickIndexStr = '七';
       }
       if (_index === _this.store.state.starIndex) {
+        if (_index > 3) {
+          alert('您已全部答完题')
+          return;
+        }
         _this.$router.push('capsule');
       } else if (_index < _this.store.state.starIndex) {
         _this.tooSmall = true;
