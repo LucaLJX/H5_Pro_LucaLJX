@@ -6,45 +6,86 @@
     <img id="map-eye" src="./../../assets/images/map/eye.png" alt="">
     <!-- 七个球 -->
     <!-- 一星 -->
-    <img id="map-ball-1-1" class="map-ball map-ball-1" src="./../../assets/images/map/ball-1-a.png" alt="">
-    <img id="map-ball-1-2" class="map-ball map-ball-1" src="./../../assets/images/map/ball-1-b.png" alt="">
+    <img id="map-ball-1-1" class="map-ball map-ball-1" src="./../../assets/images/map/ball-1-a.png" alt="" @click="toCapsule(1)">
     <!-- 二星 -->
-    <img id="map-ball-2-1" class="map-ball map-ball-2" src="./../../assets/images/map/ball-2-a.png" alt="">
-    <img id="map-ball-2-2" class="map-ball map-ball-2" src="./../../assets/images/map/ball-2-b.png" alt="">
+    <img v-if="store.state.starIndex >= 2" id="map-ball-2-1" class="map-ball map-ball-2" src="./../../assets/images/map/ball-2-a.png" alt="" @click="toCapsule(2)">
+    <img v-if="store.state.starIndex < 2" id="map-ball-2-2" class="map-ball map-ball-2" src="./../../assets/images/map/ball-2-b.png" alt="" @click="toCapsule(2)">
     <!-- 三星 -->
-    <img id="map-ball-3-1" class="map-ball map-ball-3" src="./../../assets/images/map/ball-3-a.png" alt="">
-    <img id="map-ball-3-2" class="map-ball map-ball-3" src="./../../assets/images/map/ball-3-b.png" alt="">
+    <img v-if="store.state.starIndex >= 3" id="map-ball-3-1" class="map-ball map-ball-3" src="./../../assets/images/map/ball-3-a.png" alt="" @click="toCapsule(3)">
+    <img v-if="store.state.starIndex < 3" id="map-ball-3-2" class="map-ball map-ball-3" src="./../../assets/images/map/ball-3-b.png" alt="" @click="toCapsule(3)">
     <!-- 四星 -->
-    <img id="map-ball-4-2" class="map-ball map-ball-4" src="./../../assets/images/map/ball-4-b.png" alt="">
+    <img id="map-ball-4-2" class="map-ball map-ball-4" src="./../../assets/images/map/ball-4-b.png" alt="" @click="toCapsule(4)">
     <!-- 五星 -->
-    <img id="map-ball-5-2" class="map-ball map-ball-5" src="./../../assets/images/map/ball-5-b.png" alt="">
+    <img id="map-ball-5-2" class="map-ball map-ball-5" src="./../../assets/images/map/ball-5-b.png" alt="" @click="toCapsule(5)">
     <!-- 六星 -->
-    <img id="map-ball-6-2" class="map-ball map-ball-6" src="./../../assets/images/map/ball-6-b.png" alt="">
+    <img id="map-ball-6-2" class="map-ball map-ball-6" src="./../../assets/images/map/ball-6-b.png" alt="" @click="toCapsule(6)">
     <!-- 七星 -->
-    <img id="map-ball-7-2" class="map-ball map-ball-7" src="./../../assets/images/map/ball-7-b.png" alt="">
+    <img id="map-ball-7-2" class="map-ball map-ball-7" src="./../../assets/images/map/ball-7-b.png" alt="" @click="toCapsule(7)">
     <!-- search -->
-    <img v-if="false" class="map-search" src="./../../assets/images/map/search.png" alt="">
+    <img v-if="store.state.starIndex === 1" class="map-search" src="./../../assets/images/map/search.png" alt="">
     <!-- hand -->
-    <img v-if="false" id="map-hand-1" class="map-hand" src="./../../assets/images/map/hand-1.png" alt="">
-    <img v-if="false" id="map-hand-2" class="map-hand" src="./../../assets/images/map/hand-2.png" alt="">
+    <img v-if="store.state.starIndex === 1" id="map-hand-1" class="map-hand" src="./../../assets/images/map/hand-1.png" alt="">
+    <img v-if="store.state.starIndex === 1" id="map-hand-2" class="map-hand" src="./../../assets/images/map/hand-2.png" alt="">
     <!-- 一星提示语 -->
-    <img v-if="false" class="map-words" src="./../../assets/images/map/words.png" alt="">
+    <img v-if="store.state.starIndex === 1" class="map-words" src="./../../assets/images/map/words.png" alt="">
     <!-- 二星提示语 -->
     <!-- 龟仙人 -->
-    <div class="map-master">
+    <div v-if="store.state.starIndex > 1" class="map-master">
       <div class="map-master-wrapper">
         <!-- 龟仙人图片 -->
         <img class="map-master-img" src="./../../assets/images/map/master.png" alt="">
+        <!-- 文字 -->
+        <div class="map-master-words-wrapper">
+          <p class="map-master-words-1">
+            年轻人，你已经闯过第{{ starStr }}关了，但是不要骄傲，你只能算是勉强入门了，想成为一个白骨精，路还远着呢，下面试试第{{ starNextStr }}关。
+          </p>
+          <p class="map-master-words-2">
+            <span class="map-master-words-3">P.</span>s&nbsp;点击你想要搜寻的龙珠
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import $store from './../store/store.js';
 export default {
   data () {
     return {
-
+      store: $store,
+      starStr: '',
+      starNextStr: ''
+    }
+  },
+  created: function () {
+    let _this = this;
+    switch (_this.store.state.starIndex) {
+      case 1:
+        _this.starStr = '一';
+        _this.starNextStr = '二';
+        break;
+      case 2:
+        _this.starStr = '二';
+        _this.starNextStr = '三';
+        break;
+      case 3:
+        _this.starStr = '三';
+        _this.starNextStr = '四';
+        break;
+    }
+  },
+  methods: {
+    toCapsule (index) {
+      let _this = this;
+      let _index = index;
+      if (_index === _this.store.state.starIndex) {
+        _this.$router.push('capsule');
+      } else if (_index < _this.store.state.starIndex) {
+        alert('您已答过题');
+      } else if (_index > _this.store.state.starIndex) {
+        alert('请答完' + _this.store.state.starIndex + '星题');
+      }
     }
   }
 }
@@ -364,5 +405,27 @@ hand
   width: 100%;
   height: 100%;
   position: absolute;
+}
+.map-master-words-wrapper {
+  width: 5rem;
+  position: absolute;
+  top: 4.1rem;
+  left: 50%;
+  margin-left: -2.5rem;
+  color: #fff;
+  font-family: "FZLTZCHK-GBK1-0", "Microsoft YaHei", Georgia, Serif;
+}
+.map-master-words-1 {
+  font-size: .25rem;
+  line-height: .36rem;
+}
+.map-master-words-2 {
+  font-size: .25rem;
+  line-height: .4rem;
+  color: #ffb932;
+}
+.map-master-words-3 {
+  font-size: .3rem;
+  color: #ffb932;
 }
 </style>
