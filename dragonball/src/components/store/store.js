@@ -11,7 +11,9 @@ export default new Vuex.Store({
     // 总答题数
     totalTime: 0,
     // 正确次数
-    rightTime: 0
+    rightTime: 0,
+    // 本次答题正确次数
+    thisRightTime: 0
   },
   mutations: {
     increment (state) {

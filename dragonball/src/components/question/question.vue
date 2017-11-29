@@ -327,6 +327,8 @@ export default {
           isRight: false
         }
       ],
+      // 正确的个数
+      rightTime: 0,
       // 提示
       capsuleModal: false,
       // 初始化有两个胶囊
@@ -391,6 +393,9 @@ export default {
       _this.answeredDetail[_this.questionIndex].answer = _this.answer;
       if (_this.answer === rightAnswer) {
         _this.answeredDetail[_this.questionIndex].isRight = true;
+        _this.rightTime++;
+        console.log('对的');
+        console.log(_this.rightTime);
       } else {
         _this.answeredDetail[_this.questionIndex].isRight = false;
       }
@@ -403,6 +408,8 @@ export default {
       if (_this.questionIndex === 4) {
         // 这里该跳转了
         console.log(_this.answeredDetail);
+        _this.$store.state.thisRightTime = _this.rightTime;
+        _this.$router.push('share');
         return false;
       } else {
         _this.questionIndex ++;

@@ -48,6 +48,13 @@ export default new Router({
           component (reslove) {
             require(['./../components/question/question.vue'], reslove);
           }
+        },
+        {
+          path: 'share',
+          name: 'share',
+          component (reslove) {
+            require(['./../components/share/share.vue'], reslove);
+          }
         }
       ]
     }
