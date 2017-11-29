@@ -2,6 +2,10 @@
 	<div id="question-wrapper">
 		<!-- 背景 -->
     <img class="question-wrapper-bg" src="./../../assets/images/question/bg.png" alt="">
+    <!-- title -->
+    <img v-if="$store.state.starIndex === 1" class="question-content-title-img" src="./../../assets/images/question/title-1.png" alt="">
+    <img v-if="$store.state.starIndex === 2" class="question-content-title-img" src="./../../assets/images/question/title-2.png" alt="">
+    <img v-if="$store.state.starIndex === 3" class="question-content-title-img" src="./../../assets/images/question/title-3.png" alt="">
 		<!-- 答题主体 -->
 		<div class="question-content">
 			<div class="question-content-wrapper">
@@ -493,6 +497,12 @@ export default {
 }
 .question-wrapper-bg {
   width: 100%;
+}
+.question-content-title-img {
+  width: 6.4rem;
+  height: .83rem;
+  position: absolute;
+  top: 1rem;
 }
 /**
 答题主体
