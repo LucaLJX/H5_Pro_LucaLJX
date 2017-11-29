@@ -28,6 +28,8 @@
                 optionCheckDetail[index].isChecked ? 'question-content-checked' : 'question-content-unchecked'
               ]" @click="selectItem(index)">
                 <p class="question-content-option-word" :class="[item.length <= 20 ? 'question-content-option-word-1' : 'question-content-option-word-2']">{{ item }}</p>
+                <img v-if="promptOption === (index + 1) && capsuleUsed === 1" class="question-content-option-img" src="./../../assets/images/question/yes.png" alt="">
+                <img v-if="promptOption === (index + 1) && capsuleUsed === 2" class="question-content-option-img" src="./../../assets/images/question/wrong.png" alt="">
               </div>
             </div>
           </div>
@@ -39,6 +41,52 @@
 			</div>
 		</div>
 		<!-- 尾部 -->
+    <div class="question-bottom">
+      <div class="question-bottom-wrapper">
+        <img class="question-bottom-bg" src="./../../assets/images/question/bottom.png" alt="">
+        <img v-if="capsuleTypeA" class="question-bottom-capsule-1" src="./../../assets/images/question/capsule-1.png" alt="" @click="showCapsule(1)">
+        <img v-if="capsuleTypeB" class="question-bottom-capsule-2" src="./../../assets/images/question/capsule-2.png" alt="" @click="showCapsule(2)">
+      </div>
+    </div>
+    <!-- 弹出框--提示使用胶囊 -->
+    <div class="question-modal" v-if="capsuleModal">
+      <div class="question-modal-container">
+        <div class="question-modal-border">
+          <div class="question-modal-wrapper">
+            <div class="question-modal-content">
+              <img v-if="isUseCapsuleType === 1" class="question-modal-content-img" src="./../../assets/images/question/capsule-1.png" alt="">
+              <img v-if="isUseCapsuleType === 2" class="question-modal-content-img" src="./../../assets/images/question/capsule-2.png" alt="">
+              <p class="question-modal-content-word">使用万能胶囊{{ isUseCapsuleType }}号，{{ isUseCapsuleType === 1 ? '释放一个正确答案' : '排除一个错误答案' }}。</p>
+            </div>
+            <div class="question-modal-bottom">
+              <div class="question-modal-btn" @click="isUseCapsule(false)">
+                <p class="question-modal-btn-word">不了</p>
+              </div>
+              <div class="question-modal-btn" @click="isUseCapsule(true)">
+                <p class="question-modal-btn-word">是的，我要</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 弹出框--报错--需要选择选项才可以下一题 -->
+    <div class="question-modal" v-if="wrongModal">
+      <div class="question-modal-container">
+        <div class="question-modal-border">
+          <div class="question-modal-wrapper">
+            <div class="question-modal-content-2">
+              <p class="question-modal-content-2-word">请先选择答案。</p>
+            </div>
+            <div class="question-modal-bottom">
+              <div class="question-modal-btn-2" @click="closeWrongModal()">
+                <p class="question-modal-btn-word">确定</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 	</div>
 </template>
 
@@ -278,7 +326,20 @@ export default {
           answer: null,
           isRight: false
         }
-      ]
+      ],
+      // 提示
+      capsuleModal: false,
+      // 初始化有两个胶囊
+      capsuleTypeA: true,
+      capsuleTypeB: true,
+      // 使用的胶囊
+      capsuleUsed: null,
+      // 提示的选项
+      promptOption: null,
+      // 提示是否使用胶囊编号
+      isUseCapsuleType: null,
+      // 报错
+      wrongModal: false
     };
   },
   methods: {
@@ -315,10 +376,14 @@ export default {
     // 点击确认按钮
     confirm () {
       let _this = this;
+      if (_this.answerChecked.length === 0) {
+        _this.wrongModal = true;
+        return false;
+      }
       // 操作球
       _this.answeredCount ++;
       // 当前回答的题目的正确答案
-      let rightAnswer = _this.questionMap[this.store.state.starIndex - 1].questions[_this.questionIndex].answer;
+      let rightAnswer = _this.questionMap[_this.store.state.starIndex - 1].questions[_this.questionIndex].answer;
       // 给答题详情赋值
       _this.answeredDetail[_this.questionIndex].answer = _this.answer;
       if (_this.answer === rightAnswer) {
@@ -327,6 +392,9 @@ export default {
         _this.answeredDetail[_this.questionIndex].isRight = false;
       }
       // 换下一题
+      // 清空提示
+      _this.capsuleUsed = null;
+      _this.promptOption = null;
       if (_this.questionIndex === 4) {
         // 这里该跳转了
         console.log(_this.answeredDetail);
@@ -338,6 +406,67 @@ export default {
       _this.answer = null;
       _this.answerChecked.splice(0, _this.answerChecked.length);
       _this.clearOptionState();
+    },
+    // 点击胶囊，是否使用
+    showCapsule (index) {
+      let _this = this;
+      let _index = index;
+      _this.capsuleModal = true;
+      _this.isUseCapsuleType = _index;
+    },
+    // 点击确认是否使用胶囊
+    isUseCapsule (value) {
+      let _this = this;
+      let isUse = value;
+      if (!isUse) {
+        // 不使用
+        _this.capsuleModal = false;
+      } else {
+        _this.capsuleModal = false
+        console.log(_this.isUseCapsuleType);
+        // 使用
+        if (_this.isUseCapsuleType === 1) {
+          // 使用1号胶囊
+          _this.showRight();
+        } else if (_this.isUseCapsuleType === 2) {
+          // 使用2号胶囊
+          _this.showWrong();
+        }
+      }
+    },
+    // 提示一个正确答案
+    showRight () {
+      let _this = this;
+      let rightAnswer = _this.questionMap[_this.store.state.starIndex - 1].questions[_this.questionIndex].answer;
+      rightAnswer = rightAnswer.toString();
+      let rightAnswerArr = rightAnswer.split('');
+      let arrLength = rightAnswerArr.length;
+      let showIndex = Math.floor(Math.random() * arrLength);
+      _this.promptOption = parseInt(rightAnswerArr[showIndex]);
+      _this.capsuleUsed = 1;
+      _this.capsuleTypeA = false;
+    },
+    // 提示一个错误答案
+    showWrong () {
+      let _this = this;
+      let allArr = ['1', '2', '3', '4'];
+      let rightAnswer = _this.questionMap[_this.store.state.starIndex - 1].questions[_this.questionIndex].answer;
+      let rightAnswerArr = rightAnswer.toString().split('');
+      for (let i = 0; i < rightAnswerArr.length; i++) {
+        const node = rightAnswerArr[i];
+        if (allArr.indexOf(node)) {
+          allArr.splice(allArr.indexOf(node), 1)
+        }
+      }
+      let showIndex = Math.floor(Math.random() * allArr.length);
+      _this.promptOption = parseInt(allArr[showIndex]);
+      _this.capsuleUsed = 2;
+      _this.capsuleTypeB = false;
+    },
+    // 关闭提示
+    closeWrongModal () {
+      let _this = this;
+      _this.wrongModal = false;
     }
   }
 };
@@ -425,6 +554,13 @@ export default {
   padding-left: .15rem;
   position: relative;
 }
+.question-content-option-img {
+  position: absolute;
+  width: .32rem;
+  height: .32rem;
+  right: .1rem;
+  top: 0;
+}
 .question-content-option-word-1 {
   font-size: .12rem;
   line-height: .35rem;
@@ -461,5 +597,122 @@ export default {
   font-size: .4rem;
   letter-spacing: .2rem;
   padding-left: .8rem;
+}
+/**
+bottom
+*/
+.question-bottom {
+  width: 6.4rem;
+  height: 1.69rem;
+  position: absolute;
+  bottom: 0;
+}
+.question-bottom-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.question-bottom-bg {
+  width: 100%;
+  height: 100%;
+}
+.question-bottom-capsule-1 {
+  width: 1rem;
+  height: 1rem;
+  position: absolute;
+  top: .4rem;
+  left: 2.3rem;
+}
+.question-bottom-capsule-2 {
+  width: 1rem;
+  height: 1rem;
+  position: absolute;
+  top: .4rem;
+  left: 4rem;
+}
+/**
+Modal样式
+*/
+.question-modal {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0rem;
+  z-index: 8888;
+}
+.question-modal-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.question-modal-border {
+  width: 5.6rem;
+  min-height: 2.5rem;
+  border: .02rem solid #fff;
+  position: absolute;
+  left: 50%;
+  margin-left: -2.8rem;
+  top: 3rem;
+  background-color: rgba(0, 0, 0, .9);
+  border-radius: .2rem;
+}
+.question-modal-wrapper {
+  width: 100%;
+  min-height: 2.5rem;
+  position: relative;
+}
+.question-modal-content {
+  padding-bottom: .65rem;
+}
+.question-modal-content-img {
+  width: .8rem;
+  height: .8rem;
+  margin-left: 2.4rem;
+  margin-top: .3rem;
+  margin-bottom: .2rem;
+}
+.question-modal-content-word {
+  text-align: center;
+  color: #fff;
+  font-size: .26rem;
+}
+.question-modal-bottom {
+  z-index: 9999;
+  height: .65rem;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+.question-modal-btn {
+  width: 1.7rem;
+  height: .48rem;
+  border: .02rem solid #ff9348;
+  border-radius: .24rem;
+  float: left;
+  margin-left: .68rem;
+  
+}
+.question-modal-btn-word {
+  text-align: center;
+  line-height: .48rem;
+  height: .48rem;
+  color: #fff;
+  font-size: .26rem;
+}
+.question-modal-content-2 {
+  width: 100%;
+  position: absolute;
+  top: .6rem;
+  text-align: center;
+  color: #fff;
+  font-size: .26rem;
+}
+.question-modal-btn-2 {
+  width: 1.7rem;
+  height: .48rem;
+  border: .02rem solid #ff9348;
+  border-radius: .24rem;
+  float: left;
+  margin-left: 1.8rem;
 }
 </style>
