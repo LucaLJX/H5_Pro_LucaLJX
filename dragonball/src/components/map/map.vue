@@ -146,6 +146,7 @@ eye
 */ 
 .map-ball {
   position: absolute;
+  z-index: 1000;
 }
 // 一星
 .map-ball-1 {
@@ -395,6 +396,7 @@ hand
   height: 5.95rem;
   position: absolute;
   bottom: .5rem;
+  z-index: 500;
 }
 .map-master-wrapper {
   width: 100%;
