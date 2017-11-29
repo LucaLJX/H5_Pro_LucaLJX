@@ -28,15 +28,18 @@
       <p class="capsule-desc-content">答题过程中，你可以使用“万能胶囊一号”帮你发现一个正确答案，也可以使用“万能胶囊二号”帮你排除一个错误答案，各有一次机会，要珍惜哦</p>
     </div>
     <!-- 按钮 -->
-    <img class="capsule-btn" src="./../../assets/images/capsule/btn-1.png" alt="" @click="toQuestion">
+    <img v-if="$store.state.starIndex === 1" class="capsule-btn" src="./../../assets/images/capsule/btn-1.png" alt="" @click="toQuestion">
+    <img v-if="$store.state.starIndex === 2" class="capsule-btn" src="./../../assets/images/capsule/btn-2.png" alt="" @click="toQuestion">
+    <img v-if="$store.state.starIndex === 3" class="capsule-btn" src="./../../assets/images/capsule/btn-3.png" alt="" @click="toQuestion">
   </div>
 </template>
 
 <script>
+import $store from './../store/store.js';
 export default {
   data () {
     return {
-
+      store: $store
     }
   },
   methods: {
@@ -168,10 +171,9 @@ content
 按钮
 */
 .capsule-btn {
-  width: 4.1rem;
+  width: 6.4rem;
   height: .86rem;
   position: absolute;
   bottom: .5rem;
-  left: 1.15rem;
 }
 </style>
