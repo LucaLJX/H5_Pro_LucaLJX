@@ -8,8 +8,8 @@
     <p id="capsule-title-word-2" class="capsule-title-word">OpenStack企业版</p>
     <!-- 标题--球 -->
     <img v-if="$store.state.starIndex === 1" class="capsule-title-ball" src="./../../assets/images/capsule/ball-1-a.png" alt="">
-    <img v-if="$store.state.starIndex === 2" class="capsule-title-ball" src="./../../assets/images/capsule/ball-1-a.png" alt="">
-    <img v-if="$store.state.starIndex === 3" class="capsule-title-ball" src="./../../assets/images/capsule/ball-1-a.png" alt="">
+    <img v-if="$store.state.starIndex === 2" class="capsule-title-ball" src="./../../assets/images/capsule/ball-2-a.png" alt="">
+    <img v-if="$store.state.starIndex === 3" class="capsule-title-ball" src="./../../assets/images/capsule/ball-3-a.png" alt="">
     <!-- content -->
     <div class="capsule-content">
       <div class="capsule-content-wrapper">
