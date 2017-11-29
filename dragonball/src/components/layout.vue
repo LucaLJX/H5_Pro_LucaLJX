@@ -24,7 +24,6 @@ export default {
     $axios.get(_this.$store.state.host + getUrl)
     .then(function (res) {
       console.log(res);
-      alert(res.data.count)
       // 判断星级
       if (res.data.count < 5) {
         _this.$store.state.starIndex = 1;

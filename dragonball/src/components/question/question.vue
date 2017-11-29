@@ -412,14 +412,12 @@ export default {
       let optionId = _this.answer;
       let recordUser = _this.$store.state.openid;
       $axios.post(_this.$store.state.host + 'answerRecord/', [{
-        answerRecords: {
-          paperId: paperId,
-          questionId: questionId,
-          splitKey: splitKey,
-          answerStatus: answerStatus,
-          optionId: optionId,
-          recordUser: recordUser
-        }
+        paperId: paperId,
+        questionId: questionId,
+        splitKey: splitKey,
+        answerStatus: answerStatus,
+        optionId: optionId,
+        recordUser: recordUser
       }])
       .then(function (response) {
         console.log(response);
