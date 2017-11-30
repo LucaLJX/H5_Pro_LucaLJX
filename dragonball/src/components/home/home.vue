@@ -2,6 +2,8 @@
   <div id="home-wrapper">
     <!-- 背景 -->
     <img class="home-wrapper-bg" src="./../../assets/images/home/bg.png" alt="">
+    <!-- end -->
+    <div class=""></div>
     <!-- 眼睛 -->
     <img id="home-eye" src="./../../assets/images/home/eye.png" alt="">
     <!-- 七个球 -->
