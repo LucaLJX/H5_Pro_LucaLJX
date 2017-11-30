@@ -19,6 +19,8 @@
       <img v-if="imgUrl === 1" class="share-img" src="./../../assets/images/share/pic-1.png" alt="">
       <img v-if="imgUrl === 2" class="share-img" src="./../../assets/images/share/pic-2.png" alt="">
       <img v-if="imgUrl === 3" class="share-img" src="./../../assets/images/share/pic-3.png" alt="">
+      <img v-if="imgUrl === 4" class="share-img" src="./../../assets/images/share/pic-3.png" alt="">
+      <img v-if="imgUrl === 5" class="share-img" src="./../../assets/images/share/pic-3.png" alt="">
       <!-- 按钮 -->
       <div class="share-btn-wrapper">
         <div class="share-btn" @click="findDragonball()">
@@ -48,8 +50,6 @@ export default {
   },
   created: function () {
     let _this = this;
-    console.log('share');
-    console.log(_this.store.state.thisRightTime);
     switch (_this.store.state.thisRightTime) {
       case 5:
         _this.strLine1 = '恭喜你  获得了';
@@ -69,11 +69,11 @@ export default {
         switch (_this.store.state.starIndex) {
           case 1:
             _this.strLine2 = '占卜婆婆的水晶球';
-            _this.imgUrl = 3;
+            _this.imgUrl = 4;
             break;
           case 2:
             _this.strLine2 = '如意宝';
-            _this.imgUrl = 3;
+            _this.imgUrl = 5;
             break;
           case 3:
             _this.strLine2 = '战斗力探测器';
