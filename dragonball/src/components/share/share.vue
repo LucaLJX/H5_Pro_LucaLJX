@@ -33,6 +33,8 @@
         </div>
       </div>
     </div>
+    <!-- qrcode -->
+    <img class="share-qrcode" src="./../../assets/images/share/qrcode.png" alt="">
   </div>
 </template>
 
@@ -189,5 +191,13 @@ export default {
   border-left: .18rem solid #fff;
   margin-top: .1rem;
   margin-right: .12rem;
+}
+.share-qrcode {
+  position: absolute;
+  z-index: 9999;
+  width: 2.3rem;
+  height: 2.3rem;
+  top: 6.11rem;
+  left: 2.06rem;
 }
 </style>
