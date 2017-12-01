@@ -3,7 +3,17 @@
     <!-- 背景 -->
     <img class="home-wrapper-bg" src="./../../assets/images/home/bg.png" alt="">
     <!-- end -->
-    <div class=""></div>
+    <div v-if="$store.state.allFinish" class="home-end">
+      <div class="home-end-wrapper">
+        <img class="home-end-img" src="./../../assets/images/home/end.png" alt="">
+        <div class="home-end-words-wrapper">
+          <p class="home-end-words">勇士，你已经收集到三颗龙珠了，</p>
+          <p class="home-end-words">我期待着你改变人类的未来</p>
+          <p class="home-end-words">你在搜集龙珠的路上共答对<span class="home-end-words-red">{{ $store.state.accuracy }}%</span>的问题</p>
+          <p class="home-end-words">解锁<span class="home-end-words-red">{{ $store.state.title }}</span>称号</p>
+        </div>
+      </div>
+    </div>
     <!-- 眼睛 -->
     <img id="home-eye" src="./../../assets/images/home/eye.png" alt="">
     <!-- 七个球 -->
@@ -271,5 +281,41 @@ eye
   letter-spacing: 0.05rem;
   text-align: right;
   padding-right: 0.61rem;
+}
+/**
+end
+*/
+.home-end {
+  width: 6.4rem;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .8);
+  position: absolute;
+  top: 0;
+  z-index: 99999;
+}
+.home-end-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.home-end-img {
+  width: 100%;
+}
+.home-end-words-wrapper {
+  width: 4rem;
+  position: absolute;
+  top: 3rem;
+  left: 50%;
+  margin-left: -2rem;
+}
+.home-end-words {
+  text-align: center;
+  font-size: .26rem;
+  line-height: .4rem;
+  color: #4a4a4a;
+  font-weight: bold;
+}
+.home-end-words-red {
+  color: #e33b00;
 }
 </style>

@@ -17,7 +17,9 @@ export default new Vuex.Store({
     openid: '',
     splitKey: '17d7ece13c634486a35f9600f18f6efd',
     host: 'http://question.vigoo.cn/',
-    allFinish: false
+    allFinish: false,
+    accuracy: null,
+    title: ''
   },
   mutations: {
     increment (state) {

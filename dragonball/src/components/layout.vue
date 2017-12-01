@@ -10,7 +10,8 @@ import $axios from 'axios';
 export default {
   data () {
     return {
-      store: $store
+      store: $store,
+      title: ''
     }
   },
   created: function () {
@@ -40,6 +41,20 @@ export default {
         if (parseInt(node.answerStatus) === 1) {
           $store.state.rightTime++;
         }
+      }
+      // 计算正确率
+      if ($store.state.allFinish) {
+        $store.state.accuracy = (($store.state.rightTime / 15) * 100).toFixed(0);
+      }
+      // 判断称号
+      if ($store.state.accuracy === 100) {
+        $store.state.title = '后厂村传奇';
+      } else if ($store.state.accuracy < 100 && $store.state.accuracy >= 80) {
+        $store.state.title = '西北旺精英';
+      } else if ($store.state.accuracy < 80 && $store.state.accuracy >= 60) {
+        $store.state.title = '中关村勇士';
+      } else {
+        $store.state.title = '传说中的猪队友';
       }
     })
     .catch(function (error) {
