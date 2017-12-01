@@ -22,12 +22,12 @@
     <!-- 七星 -->
     <img id="map-ball-7-2" class="map-ball map-ball-7" src="./../../assets/images/map/ball-7-b.png" alt="" @click="toCapsule(7)">
     <!-- search -->
-    <img v-if="store.state.starIndex === 1" class="map-search" src="./../../assets/images/map/search.png" alt="">
+    <img v-if="store.state.starIndex === 1" class="map-search" src="./../../assets/images/map/search.png" alt="" @touchstart="searchTouchStart" @touchmove="searchTouchMove" @touchend="searchTouchEnd">
     <!-- hand -->
-    <img v-if="store.state.starIndex === 1" id="map-hand-1" class="map-hand" src="./../../assets/images/map/hand-1.png" alt="">
-    <img v-if="store.state.starIndex === 1" id="map-hand-2" class="map-hand" src="./../../assets/images/map/hand-2.png" alt="">
+    <img v-if="store.state.starIndex === 1 && showHand" id="map-hand-1" class="map-hand" src="./../../assets/images/map/hand-1.png" alt="">
+    <img v-if="store.state.starIndex === 1 && showHand" id="map-hand-2" class="map-hand" src="./../../assets/images/map/hand-2.png" alt="">
     <!-- 一星提示语 -->
-    <img v-if="store.state.starIndex === 1" class="map-words" src="./../../assets/images/map/words.png" alt="">
+    <img v-if="store.state.starIndex === 1 && showWords" class="map-words" src="./../../assets/images/map/words.png" alt="">
     <!-- 二星提示语 -->
     <!-- 龟仙人 -->
     <div v-if="store.state.starIndex > 1" class="map-master">
@@ -40,7 +40,7 @@
             年轻人，你已经闯过第{{ starStr }}关了，但是不要骄傲，你只能算是勉强入门了，想成为一个白骨精，路还远着呢，下面试试第{{ starNextStr }}关。
           </p>
           <p class="map-master-words-2">
-            <span class="map-master-words-3">P.</span>s&nbsp;点击你想要搜寻的龙珠
+            <span class="map-master-words-3">P.</span>s&nbsp;点击上方浮动的龙珠，继续寻找下一颗
           </p>
         </div>
       </div>
@@ -68,6 +68,7 @@
 
 <script>
 import $store from './../store/store.js';
+import $ from 'jquery';
 export default {
   data () {
     return {
@@ -77,7 +78,16 @@ export default {
       wrongModal: false,
       tooBig: false,
       tooSmall: false,
-      clickIndexStr: ''
+      clickIndexStr: '',
+      // 控制展示一星情况下的手还有文字
+      showHand: true,
+      showWords: true,
+      // 雷达初始位置
+      startY: null,
+      // 雷达移动距离
+      moveY: null,
+      // 雷达移动最大距离
+      moveMax: null
     }
   },
   created: function () {
@@ -98,6 +108,53 @@ export default {
     }
   },
   methods: {
+    // 触摸雷达
+    searchTouchStart (e) {
+      let _this = this;
+      _this.startY = $('.map-search').offset().top;
+      _this.moveMax = _this.startY / 2;
+      _this.showHand = false;
+      _this.showWords = false;
+    },
+    // 滑动雷达
+    searchTouchMove (e) {
+      let _this = this;
+      _this.moveY = e.targetTouches[0].pageY;
+      let height = $('.map-search').height();
+      let endY = _this.moveY - (height / 2);
+      if (endY <= _this.startY && endY >= (_this.startY / 2)) {
+        $('.map-search').css('top', _this.moveY - (height / 2) + 'px');
+      }
+    },
+    // 移除滑动
+    searchTouchEnd () {
+      let _this = this;
+      let searchDom = $('.map-search');
+      searchDom.css('z-index', '99999');
+      let domWidth = 2.6;
+      let domHeight = 2.6;
+      let domLeft = -1.3;
+      let domOpacity = 1;
+      let domTop = searchDom.offset().top;
+      function change () {
+        domWidth += 0.06;
+        domHeight += 0.06;
+        domLeft -= 0.03;
+        domTop -= 1;
+        domOpacity -= 0.005;
+        searchDom.css('width', domWidth + 'rem');
+        searchDom.css('height', domHeight + 'rem');
+        searchDom.css('margin-left', domLeft + 'rem');
+        searchDom.css('top', domTop + 'px');
+        searchDom.css('opacity', domOpacity);
+      }
+      let timeEvent = setInterval(change, 10);
+      setTimeout(function () {
+        clearInterval(timeEvent);
+        _this.$router.push('capsule');
+      }, 1000);
+    },
+    // 点击星星
     toCapsule (index) {
       let _this = this;
       let _index = index;
@@ -263,6 +320,7 @@ search
   bottom: 1rem;
   left: 50%;
   margin-left: -1.3rem;
+  z-index: 9999;
 }
 /**
 hand
@@ -273,6 +331,7 @@ hand
   position: absolute;
   bottom: 0;
   left: 1.5rem;
+  z-index: 10000;
 }
 @keyframes hand1Blink {
   0% {
@@ -443,6 +502,7 @@ hand
   right: .5rem;
   bottom: 3rem;
   position: absolute;
+  z-index: 8888;
 }
 /**
 二星+提示语
