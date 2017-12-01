@@ -36,8 +36,11 @@
         <img class="map-master-img" src="./../../assets/images/map/master.png" alt="">
         <!-- 文字 -->
         <div class="map-master-words-wrapper">
-          <p class="map-master-words-1">
-            年轻人，你已经闯过第{{ starStr }}关了，但是不要骄傲，你只能算是勉强入门了，想成为一个白骨精，路还远着呢，下面试试第{{ starNextStr }}关。
+          <p class="map-master-words-1" v-if="$store.state.starIndex === 2">
+            年轻人，你已经闯过第一关了，但是不要骄傲，你只能算是勉强入门了，想成为一个白骨精，路还远着呢，下面试试第二关。
+          </p>
+          <p class="map-master-words-1" v-if="$store.state.starIndex === 3">
+           凡人，我看到了你的天赋，但是只有天赋是不够的，还需要进行不断的练习和提升，你准备好进入第三关了吗？
           </p>
           <p class="map-master-words-2">
             <span class="map-master-words-3">P.</span>s&nbsp;点击上方浮动的龙珠，继续寻找下一颗
