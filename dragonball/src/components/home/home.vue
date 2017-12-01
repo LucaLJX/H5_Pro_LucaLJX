@@ -28,8 +28,9 @@
     <!-- 底部searcher -->
     <div class="home-searcher">
         <div class="home-searcher-wrapper">
-            <img class="home-searcher-img" src="./../../assets/images/home/searcher.png" alt="">
-            <p class="home-searcher-words" @click="toExplain">滑动开始冒险</p>
+            <img class="home-searcher-img" src="./../../assets/images/home/searcher.png" alt="" @touchstart="searchTouchStart" @touchmove="searchTouchMove"
+            @touchend="searchTouchEnd">
+            <p class="home-searcher-words">滑动开始冒险</p>
         </div>
     </div>
   </div>
@@ -37,18 +38,53 @@
 
 <script>
 import $store from './../store/store.js';
+import $ from 'jquery';
 export default {
   data() {
     return {
-      store: $store
+      store: $store,
+      searchImgObj: {
+        // 初始距离
+        start: null,
+        // 滑动距离
+        moveX: null,
+        // 最大滑动距离
+        moveMax: null
+      }
     };
   },
   created: function() {
   },
   methods: {
     // 页面跳转
-    toExplain () {
-      this.$router.push('/explain');
+    searchTouchStart () {
+      let _this = this;
+      _this.start = $('.home-searcher-img').offset().left;
+      // 容器的宽度
+      let wrapperWidth = $('.home-searcher').width();
+      // 拖拽图片宽度
+      let imgWidth = $('.home-searcher-img').width();
+      // 最大移动距离
+      _this.moveMax = wrapperWidth - imgWidth;
+    },
+    searchTouchMove (e) {
+      let _this = this;
+      _this.moveX = e.targetTouches[0].pageX - _this.start;
+      if (_this.moveX > 0 && _this.moveX < _this.moveMax) {
+        $('.home-searcher-img').css('left', _this.moveX + 'px');
+      }
+    },
+    searchTouchEnd () {
+      let _this = this;
+      let minMoveX = _this.moveMax / 2;
+      if (_this.moveX > minMoveX) {
+        _this.$router.push('/explain');
+      } else {
+        do {
+          $('.home-searcher-img').css('left', _this.moveX + 'px');
+          _this.moveX--
+        } while (_this.moveX > 0);
+      }
     }
   }
 };
