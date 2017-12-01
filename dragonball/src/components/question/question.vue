@@ -169,7 +169,7 @@ export default {
           questions: [
             {
               questionNo: 1,
-              question: '云管理平台是一种管理各种云环境的整合性方案产品，其最小的功能范围应该包括自服务界面、创建系统镜像、监控和账单，以及基于策略的一定程度的负载优化等功能。业界云管平台英文缩写应该是哪一个？',
+              question: '业内定义云管理平台的英文缩写是：',
               options: [
                 'A、MPM',
                 'B、CMP',
@@ -204,10 +204,10 @@ export default {
               questionNo: 4,
               question: '云管平台概念的误区是？',
               options: [
-                'A、云管平台负责对云平台的管理职责',
+                'A、云管平台负责对云平台进行管理',
                 'B、OpenStack就是云管平台',
-                'C、云管平台既可以管理云架构资源，也可以管理传统架构资源',
-                'D、云管平台与云平台一样，市场都处于高速增长期'
+                'C、云管平台可以管理传统架构资源',
+                'D、云管平台市场需求处于高速增长期'
               ],
               answer: 2
             },
@@ -263,12 +263,12 @@ export default {
             },
             {
               questionNo: 4,
-              question: '以下哪项是对虚拟机的最佳描述：',
+              question: '对虚拟机的最佳描述是：',
               options: [
-                'A、执行虚拟化软件测试程序的物理机',
-                'B、通过软件实施的计算机，可以像物理机一样执行程序',
-                'C、一种旨在提供网络故障切换和故障恢复功能的计算机工具',
-                'D、一种软件计算机，其中封装了物理硬件'
+                'A、执行软件测试程序的物理机',
+                'B、通过虚拟机软件可以像物理机一样执行程序',
+                'C、提供故障恢复功能的计算机工具',
+                'D、封装了硬件的软件计算机'
               ],
               answer: 2
             },
@@ -580,17 +580,17 @@ export default {
   color: #fff;
   padding-left: .2rem;
   padding-right: .2rem;
-  font-size: .2rem;
+  font-size: .3rem;
   font-weight: bold;
-  line-height: .28rem;
+  line-height: .32rem;
 }
 .question-content-option-wrapper {
   width: 100%;
-  height: 2rem;
+  height: 2.2rem;
 }
 .question-content-option {
   width: 4.2rem;
-  min-height: .35rem;
+  min-height: .4rem;
   margin-left: .1rem;
   margin-bottom: .1rem;
   border-radius: .175rem;
@@ -606,13 +606,13 @@ export default {
   top: 0;
 }
 .question-content-option-word-1 {
-  font-size: .12rem;
-  line-height: .35rem;
+  font-size: .3rem;
+  line-height: .4rem;
   display: block;
   width: 3.8rem;
 }
 .question-content-option-word-2 {
-  font-size: .12rem;
+  // font-size: .16rem;
   line-height: .24rem;
   display: block;
   width: 3.8rem;
