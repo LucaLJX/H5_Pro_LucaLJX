@@ -17,9 +17,6 @@ export default {
   created: function () {
     let _path = this.$route.path;
     let _this = this;
-    if (_path.length === 1) {
-      _this.$router.push('home');
-    }
     $store.state.openid = _this.getQueryString('openid');
     let getUrl = 'answerRecord/' + _this.$store.state.splitKey + '/' + _this.$store.state.openid + '/';
     $axios.get(_this.$store.state.host + getUrl)
@@ -55,6 +52,9 @@ export default {
         $store.state.title = '中关村勇士';
       } else {
         $store.state.title = '传说中的猪队友';
+      }
+      if (_path.length === 1) {
+        _this.$router.push({path: 'home', query: { title: _this.$store.state.title }});
       }
     })
     .catch(function (error) {

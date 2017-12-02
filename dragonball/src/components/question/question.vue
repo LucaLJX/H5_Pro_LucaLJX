@@ -435,6 +435,7 @@ export default {
         // 这里该跳转了
         console.log(_this.answeredDetail);
         _this.$store.state.thisRightTime = _this.rightTime;
+        // _this.$store.state.totalTime = _this.$store.state.totalTime + 5;
         _this.$router.push('share');
         return false;
       } else {

@@ -1,4 +1,6 @@
 function shareWeiChat() {
+	alert();
+	alert(window.location.href);
 	var host = window.location.host;
 	var shareUrl, imgUrl, shareTitle, shareDesc, appid, appsecret, timestamp, nonceStr, jsapi_ticket, url,
 		signature;

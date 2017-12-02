@@ -27,7 +27,7 @@
           <div class="share-left-btn-triangle"></div>
           <div class="share-left-btn-words">继续寻找龙珠</div>
         </div>
-        <div class="share-btn">
+        <div class="share-btn" @click="shareWeiChat">
           <div class="share-right-btn-triangle"></div>
           <div class="share-right-btn-words">炫耀一下</div>
         </div>
@@ -91,6 +91,9 @@ export default {
       _this.$store.state.starIndex++;
       _this.$store.state.rightTime += _this.$store.state.thisRightTime;
       _this.$router.push('map');
+    },
+    // 分享
+    shareWeiChat () {
     }
   }
 }
