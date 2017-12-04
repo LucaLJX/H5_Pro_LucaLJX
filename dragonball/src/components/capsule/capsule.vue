@@ -58,6 +58,7 @@ export default {
     }
   },
   created: function () {
+    $store.state.isLoading = false;
   },
   mounted: function () {
   },

@@ -7,7 +7,14 @@ import store from './components/store/store.js'
 
 Vue.config.productionTip = false
 
+
 /* eslint-disable no-new */
+router.beforeEach((to, from, next) => {
+  store.state.isLoading = true;
+  next()
+})
+router.afterEach((to, from) => {
+})
 new Vue({
   el: '#app',
   store,

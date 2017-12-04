@@ -32,7 +32,7 @@ export default {
     }
   },
   created: function () {
-
+    $store.state.isLoading = false;
   },
   methods: {
     // 页面跳转

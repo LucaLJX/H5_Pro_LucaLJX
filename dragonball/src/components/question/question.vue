@@ -352,6 +352,9 @@ export default {
       wrongModal: false
     };
   },
+  created: function () {
+    $store.state.isLoading = false;
+  },
   methods: {
     // 清空选项状态
     clearOptionState () {

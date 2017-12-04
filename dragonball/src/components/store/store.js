@@ -19,7 +19,9 @@ export default new Vuex.Store({
     host: 'http://question.vigoo.cn/',
     allFinish: false,
     accuracy: null,
-    title: ''
+    title: '',
+    // 预加载
+    isLoading: false
   },
   mutations: {
     increment (state) {

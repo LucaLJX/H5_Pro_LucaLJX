@@ -57,6 +57,7 @@ export default {
   },
   created: function () {
     let _this = this;
+    $store.state.isLoading = false;
     switch (_this.store.state.thisRightTime) {
       case 5:
         _this.strLine1 = '恭喜你  获得了';
