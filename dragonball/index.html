@@ -35,6 +35,11 @@
       doc.addEventListener('DOMContentLoaded', recalc, false);
     })(document, window);
   </script>
+  <script>
+    $(document).ready(function () {
+      $('body').on('touchmove', function (event) {event.preventDefault();});  
+    });
+  </script>
   <style>
     html, body, #app {
       width: 100%;
