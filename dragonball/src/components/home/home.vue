@@ -11,6 +11,8 @@
           <p class="home-end-words">我期待着你改变人类的未来</p>
           <p class="home-end-words">你在搜集龙珠的路上共答对<span class="home-end-words-red">{{ $store.state.accuracy }}%</span>的问题</p>
           <p class="home-end-words">解锁<span class="home-end-words-red">{{ $store.state.title }}</span>称号</p>
+          <!-- code -->
+          <img class="home-end-words-code" src="./../../assets/images/home/qrcode.png" alt="">
         </div>
       </div>
     </div>
@@ -340,7 +342,7 @@ end
 .home-end-words-wrapper {
   width: 4rem;
   position: absolute;
-  top: 3rem;
+  top: 2.3rem;
   left: 50%;
   margin-left: -2rem;
 }
@@ -353,5 +355,10 @@ end
 }
 .home-end-words-red {
   color: #e33b00;
+}
+.home-end-words-code {
+  width: 3.08rem;
+  height: 1.53rem;
+  margin-left: .46rem;
 }
 </style>
