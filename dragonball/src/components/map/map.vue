@@ -95,7 +95,9 @@ export default {
   },
   created: function () {
     let _this = this;
-    $store.state.isLoading = false;
+    setTimeout(function () {
+      $store.state.isLoading = false;
+    }, 1000);
     switch (_this.store.state.starIndex) {
       case 1:
         _this.starStr = '零';

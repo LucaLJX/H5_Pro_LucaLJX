@@ -56,7 +56,9 @@ export default {
     };
   },
   created: function() {
-    $store.state.isLoading = false;
+    setTimeout(function () {
+      $store.state.isLoading = false;
+    }, 1000);
   },
   methods: {
     // 页面跳转
