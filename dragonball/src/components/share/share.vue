@@ -2,6 +2,10 @@
   <div id="share-wrapper">
     <!-- 背景 -->
     <img class="share-wrapper-bg" src="./../../assets/images/share/bg.png" alt="">
+    <!-- 遮罩层 -->
+    <div v-if="showFix" class="share-end-wrapper">
+      <img class="share-end-img" src="./../../assets/images/share/fix.png" alt="">
+    </div>
     <div class="share-wrapper-container">
       <!-- 第一句话 -->
       <p class="share-line-1">
@@ -47,7 +51,8 @@ export default {
       strLine1: '',
       strLine2: '',
       strLine3: '',
-      imgUrl: null
+      imgUrl: null,
+      showFix: false
     }
   },
   created: function () {
@@ -90,10 +95,15 @@ export default {
       let _this = this;
       _this.$store.state.starIndex++;
       _this.$store.state.rightTime += _this.$store.state.thisRightTime;
-      _this.$router.push('map');
+      if (_this.$store.rightTime === 15) {
+        _this.$router.push('/');
+      } else {
+        _this.$router.push('map');
+      }
     },
     // 分享
     shareWeiChat () {
+      this.showFix = true;
     }
   }
 }
@@ -114,6 +124,18 @@ export default {
   width: 100%;
   height: 100%;
   top: 0;
+}
+// 遮罩层
+.share-end-wrapper {
+  width: 6.4rem;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, .8);
+  top: 0;
+  z-index: 10000;
+}
+.share-end-img {
+  width: 100%;
 }
 // 第一句话
 .share-line-1 {
