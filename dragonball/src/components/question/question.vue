@@ -80,7 +80,8 @@
         <div class="question-modal-border">
           <div class="question-modal-wrapper">
             <div class="question-modal-content-2">
-              <p class="question-modal-content-2-word">请先选择答案。</p>
+              <p class="question-modal-content-2-word" v-if="!tooMoreAnswer">请先选择答案。</p>
+              <p class="question-modal-content-2-word" v-if="tooMoreAnswer">单选题只能选择一个答案。</p>
             </div>
             <div class="question-modal-bottom">
               <div class="question-modal-btn-2" @click="closeWrongModal()">
@@ -115,7 +116,8 @@ export default {
                 'C、SAAS',
                 'D、PAAS'
               ],
-              answer: 134
+              answer: 134,
+              answerSingle: false
             },
             {
               questionNo: 2,
@@ -126,7 +128,8 @@ export default {
                 'C、基础设施即服务',
                 'D、数据即服务'
               ],
-              answer: 3
+              answer: 3,
+              answerSingle: true
             },
             {
               questionNo: 3,
@@ -137,7 +140,8 @@ export default {
                 'C、数据库审计',
                 'D、访问授权'
               ],
-              answer: 124
+              answer: 124,
+              answerSingle: false
             },
             {
               questionNo: 4,
@@ -148,7 +152,8 @@ export default {
                 'C、运维成本',
                 'D、技术复杂度'
               ],
-              answer: 123
+              answer: 123,
+              answerSingle: false
             },
             {
               questionNo: 5,
@@ -159,7 +164,8 @@ export default {
                 'C、支持文件、对象和块存储',
                 'D、双活容灾的复杂度'
               ],
-              answer: 123
+              answer: 123,
+              answerSingle: false
             }
           ]
         },
@@ -176,7 +182,8 @@ export default {
                 'C、MCP',
                 'D、MPC'
               ],
-              answer: 2
+              answer: 2,
+              answerSingle: true
             },
             {
               questionNo: 2,
@@ -187,7 +194,8 @@ export default {
                 'C、OpenStack',
                 'D、行业业务系统'
               ],
-              answer: 4
+              answer: 4,
+              answerSingle: true
             },
             {
               questionNo: 3,
@@ -198,7 +206,8 @@ export default {
                 'C、智能自动化运维',
                 'D、多云统一管理'
               ],
-              answer: 1234
+              answer: 1234,
+              answerSingle: false
             },
             {
               questionNo: 4,
@@ -209,7 +218,8 @@ export default {
                 'C、云管平台可以管理传统架构资源',
                 'D、云管平台市场需求处于高速增长期'
               ],
-              answer: 2
+              answer: 2,
+              answerSingle: true
             },
             {
               questionNo: 5,
@@ -220,7 +230,8 @@ export default {
                 'C、资源弹性伸缩',
                 'D、按需供应'
               ],
-              answer: 1234
+              answer: 1234,
+              answerSingle: false
             }
           ]
         },
@@ -237,7 +248,8 @@ export default {
                 'C、VMware vSphere',
                 'D、Docker'
               ],
-              answer: 4
+              answer: 4,
+              answerSingle: true
             },
             {
               questionNo: 2,
@@ -248,7 +260,8 @@ export default {
                 'C、安全自主可控',
                 'D、提高易用性和灵活性'
               ],
-              answer: 1234
+              answer: 1234,
+              answerSingle: false
             },
             {
               questionNo: 3,
@@ -259,7 +272,8 @@ export default {
                 'C、vCPU和内存动态调整',
                 'D、物理机聚合'
               ],
-              answer: 4
+              answer: 4,
+              answerSingle: true
             },
             {
               questionNo: 4,
@@ -270,7 +284,8 @@ export default {
                 'C、提供故障恢复功能的计算机工具',
                 'D、封装了硬件的软件计算机'
               ],
-              answer: 2
+              answer: 2,
+              answerSingle: true
             },
             {
               questionNo: 5,
@@ -281,7 +296,8 @@ export default {
                 'C、NUMA架构',
                 'D、寄居架构'
               ],
-              answer: 14
+              answer: 14,
+              answerSingle: false
             }
           ]
         }
@@ -349,7 +365,8 @@ export default {
       // 提示是否使用胶囊编号
       isUseCapsuleType: null,
       // 报错
-      wrongModal: false
+      wrongModal: false,
+      tooMoreAnswer: false
     };
   },
   created: function () {
@@ -386,14 +403,22 @@ export default {
       // 对当前答案进行排序处理
       _this.answerChecked.sort();
       _this.answer = parseInt(_this.answerChecked.join(''));
-      console.log(_this.answerChecked);
     },
     // 点击确认按钮
     confirm () {
       let _this = this;
       if (_this.answerChecked.length === 0) {
         _this.wrongModal = true;
+        _this.tooMoreAnswer = false;
         return false;
+      } else {
+        if (_this.answerChecked.length > 1) {
+          if (_this.questionMap[_this.store.state.starIndex - 1].questions[_this.questionIndex].answerSingle) {
+            _this.wrongModal = true;
+            _this.tooMoreAnswer = true;
+            return false;
+          }
+        }
       }
       // 操作球
       _this.answeredCount ++;
@@ -404,8 +429,6 @@ export default {
       if (_this.answer === rightAnswer) {
         _this.answeredDetail[_this.questionIndex].isRight = true;
         _this.rightTime++;
-        console.log('对的');
-        console.log(_this.rightTime);
       } else {
         _this.answeredDetail[_this.questionIndex].isRight = false;
       }
@@ -438,7 +461,6 @@ export default {
       _this.promptOptionB = null;
       if (_this.questionIndex === 4) {
         // 这里该跳转了
-        console.log(_this.answeredDetail);
         _this.$store.state.thisRightTime = _this.rightTime;
         // _this.$store.state.totalTime = _this.$store.state.totalTime + 5;
         _this.$router.push('share');
@@ -467,7 +489,6 @@ export default {
         _this.capsuleModal = false;
       } else {
         _this.capsuleModal = false
-        console.log(_this.isUseCapsuleType);
         // 使用
         if (_this.isUseCapsuleType === 1) {
           // 使用1号胶囊
