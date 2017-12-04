@@ -23,8 +23,8 @@
       <img v-if="imgUrl === 1" class="share-img" src="./../../assets/images/share/pic-1.png" alt="">
       <img v-if="imgUrl === 2" class="share-img" src="./../../assets/images/share/pic-2.png" alt="">
       <img v-if="imgUrl === 3" class="share-img" src="./../../assets/images/share/pic-3.png" alt="">
-      <img v-if="imgUrl === 4" class="share-img" src="./../../assets/images/share/pic-3.png" alt="">
-      <img v-if="imgUrl === 5" class="share-img" src="./../../assets/images/share/pic-3.png" alt="">
+      <img v-if="imgUrl === 4" class="share-img" src="./../../assets/images/share/pic-4.png" alt="">
+      <img v-if="imgUrl === 5" class="share-img" src="./../../assets/images/share/pic-5.png" alt="">
       <!-- 按钮 -->
       <div class="share-btn-wrapper">
         <div class="share-btn" @click="findDragonball()">
@@ -82,7 +82,7 @@ export default {
             _this.imgUrl = 4;
             break;
           case 2:
-            _this.strLine2 = '如意宝';
+            _this.strLine2 = '如意棒';
             _this.imgUrl = 5;
             break;
           case 3:
