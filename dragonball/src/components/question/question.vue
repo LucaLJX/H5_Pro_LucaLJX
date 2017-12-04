@@ -581,7 +581,7 @@ export default {
   color: #fff;
   padding-left: .2rem;
   padding-right: .2rem;
-  font-size: .3rem;
+  font-size: .28rem;
   font-weight: bold;
   line-height: .32rem;
 }
@@ -591,7 +591,7 @@ export default {
 }
 .question-content-option {
   width: 4.2rem;
-  min-height: .4rem;
+  min-height: .34rem;
   margin-left: .1rem;
   margin-bottom: .1rem;
   border-radius: .175rem;
@@ -607,14 +607,14 @@ export default {
   top: 0;
 }
 .question-content-option-word-1 {
-  font-size: .3rem;
-  line-height: .4rem;
+  font-size: .28rem;
+  line-height: .34rem;
   display: block;
   width: 3.8rem;
 }
 .question-content-option-word-2 {
   // font-size: .16rem;
-  line-height: .24rem;
+  line-height: .34rem;
   display: block;
   width: 3.8rem;
 }
