@@ -41,6 +41,7 @@ export default {
     }
   },
   created: function () {
+    $store.state.isLoading = true;
     let _path = this.$route.path;
     let _this = this;
     $store.state.openid = _this.getQueryString('openid');
@@ -86,7 +87,6 @@ export default {
     .catch(function (error) {
       console.log(error);
     });
-    $store.state.isLoading = true;
   },
   methods: {
     getQueryString(name) {
