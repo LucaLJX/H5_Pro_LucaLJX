@@ -1,10 +1,12 @@
 function shareWeiChat() {
 	alert();
 	alert(window.location.href);
+	alert(window.location.href.length);
+	alert(window.location.href.indexOf('='));
 	var host = window.location.host;
 	var shareUrl, imgUrl, shareTitle, shareDesc, appid, appsecret, timestamp, nonceStr, jsapi_ticket, url,
 		signature;
-	imgUrl = "http://h5.mbur.cn/jd_travel/images/share.jpg"; // 分享图片
+	imgUrl = "http://h5.vigoo.cn/static/img/dragon-share.jpg"; // 分享图片
 	shareTitle = "调查问卷"; // 分享title
 	shareDesc = "为了让联想为您提供更专业的服务，来参与吧！"; // 分享描述
 	shareUrl = "http://h5.mbur.cn/jd_travel/index.html"; // 分享地址
@@ -130,4 +132,6 @@ function shareWeiChat() {
 		}
 	});
 }
-shareWeiChat();
+setTimeout(function () {
+	shareWeiChat();
+}, 1000);

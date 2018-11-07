@@ -44,6 +44,9 @@ export default {
     $store.state.isLoading = true;
     let _path = this.$route.path;
     let _this = this;
+    _this.$router.push({path: 'home', query: { title: _this.$store.state.title }});
+    // 直接跳转首页，不因为别的，就因为接口挂了。。。
+    // 2333
     $store.state.openid = _this.getQueryString('openid');
     let getUrl = 'answerRecord/' + _this.$store.state.splitKey + '/' + _this.$store.state.openid + '/';
     $axios.get(_this.$store.state.host + getUrl)
