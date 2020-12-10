@@ -1,0 +1,64 @@
+#newDraw {
+  width: 100%;
+  min-height: 100vh;
+  .header {
+    height: 80px;
+  }
+  .content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 20px 20px;
+    height: calc(100vh - 80px);
+    // 左边抽奖区域
+    .left {
+      flex: 1;
+      .items {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        // 每一个item设置样式
+        .item {
+          width: 80px;
+          height: 60px;
+          padding: 2px 5px;
+
+          .item_content {
+            background-color: #409EFF;
+            color: #fff;
+            text-align: center;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+            .item_name {
+              height: 30px;
+              line-height: 30px;
+              font-size: 20px;
+            }
+            .item_tel {
+              height: 20px;
+              line-height: 20px;
+              font-size: 12px;
+            }
+          }
+          // 选中
+          .item_active {
+            // background-color: #67C23A!important;
+            background-color: #F56C6C!important;
+          }
+          // 禁用
+          .item_disabled {
+            background-color: #DCDFE6!important;
+            color: #303133!important;
+          }
+        }
+      }
+    }
+    // 右边操作、展示区域
+    .right {
+      width: 300px;
+      margin-left: 20px;
+    }
+  }
+}
