@@ -43,7 +43,7 @@
           <!-- 操作 -->
           <el-form label-width="80px" label-positio="right">
             <el-form-item label="暂停登记" style="margin-top: 30px">
-              <el-button size="small" type="danger" @click="onSubmit">暂停</el-button>
+              <el-button size="small" type="danger" @click="stopGet()" :disabled="isStopClick">暂停</el-button>
             </el-form-item>
             <el-form-item label="二等奖">
               <el-button
@@ -77,11 +77,24 @@
 <script>
 // import '../../style/luckDraw.css'
 import './index.less'
+import { mockList } from './mock'
 
 const LUCK_TYPE = {
   FIRST: 'FIRST', // 一等奖
   Secend: 'Secend', // 二等奖
 }
+
+// 数量
+const FIRST_COUNT = 1
+const SECEND_COUNT = 5
+const THIRD_COUNT = 10
+
+/**
+ * 以手机号（telephone 字段）为唯一判定值
+ * 1、增接口，手机号、姓名去重，若手机号已存在，则提示（是否修改名称）
+ * 2、删接口手动调用
+ * 3、查询按时间顺序一次性展示全量（时间倒序：修改时间最早在最前）
+ */
 
 const DEFAULT_FIRENDS = [
   {
@@ -100,25 +113,45 @@ const DEFAULT_FIRENDS = [
     telephone: '15151548725',
     name: '张建',
   },
+  {
+    telephone: '18221246182',
+    name: '杨军义',
+  },
+  {
+    telephone: '18221246059',
+    name: '顾於梅',
+  },
 ]
 
 export default {
   data() {
     return {
+      mockList,
       LUCK_TYPE,
       DEFAULT_FIRENDS,
-      title: 'ceshi',
+      // -----------系统变量
+      firstCount: FIRST_COUNT,
+      secendCount: SECEND_COUNT,
+      thirdCount: THIRD_COUNT,
+      luckyCount: 0,
+      // ----------登记阶段用到的变量
       totalList: [], // 所有的参赛选手数据
       activeTel: 'id_22',
-      checkedList: [], // 当前选中的
-      selectedList: [], // 已经选过的
-      telList: [], // 当前剩下的id
+      telList: [], // 当前剩下的tel
+      // 抽奖轮询
+      getTimer: null,
+      // 是否点击过停止
+      isStopClick: false,
+      // -------------------内定及一等奖数据
       // 内定的朋友
-      defaultList: [],
-      // 是否开始了
+      firendList: [],
+      // 暂存一等奖
+      cahceFirst: null,
+      // 一等奖
+      firstList: [],
+      // ------------------- todo: 这里需要配置按钮的操作变量 分开，还是按照抽奖个数动态处理
+      // 是否开始抽奖 true -- 开始抽奖 false -- 停止抽奖
       isStart: false,
-      // 是否停了
-      isStop: true,
       // 抽奖类型
       type: null,
       // 抽奖循环
@@ -127,37 +160,69 @@ export default {
       secendCount: 0,
       // 抽二等奖的操作
       luckSecendTimer: null,
+      // 三等奖获奖数
+      thirdList: [],
+      // 二等奖获奖数
+      secendList: [],
+      
     }
   },
   async mounted() {
-    console.log('mounted')
-    const list = []
-    const telList = []
-    for (let i = 0; i < 100; i += 1) {
-      list.push({
-        name: `item_${i + 1}`,
-        id: `id_${i + 1}`,
-        telephone: `tel_${i + 1}`,
-      })
-      telList.push(`tel_${i + 1}`)
-    }
-    // 赋值朋友
-    this.defaultList = DEFAULT_FIRENDS
-    this.defaultList.map((item) => {
-      telList.push(item.telephone)
-      return null
-    })
-    this.totalList = [...list, ...DEFAULT_FIRENDS]
-    this.telList = telList
+    this.getTimer = setInterval(() => {
+      this.getList()
+    }, 2000)
   },
   methods: {
+    // 获取所有人的信息
+    mockApi() {
+      return new Promise((resolve, reject) => {
+        const list = this.mockList
+        setTimeout(() => {
+          resolve(list)
+        }, 500)
+      })
+    },
+    // 获取数据并赋值
+    async getList() {
+      console.log('开始获取数据')
+      const result = await this.mockApi()
+      const friends = []
+      const telephones = []
+      result.map(item => {
+        const friendItem = DEFAULT_FIRENDS.find(friend => friend.telephone === item.telephone)
+        if (friendItem) {
+          friends.push(item)
+        }
+        telephones.push(item.telephone)
+      })
+      console.log(result)
+      this.firendList = friends
+      this.telList = telephones
+      this.totalList = result
+    },
+    /**
+     * 停止登记
+     * 1、直接生成一等奖
+     */
+    stopGet () {
+      clearInterval(this.getTimer)
+      this.isStopClick = true
+      // 停止获取数据的时候，直接内定一等奖
+      const friendsLength = this.firendList.length
+      const randomNum = Math.floor(Math.random() * friendsLength)
+      console.log(randomNum)
+      const firstLuckyMan = this.firendList[randomNum]
+      console.log('幸运儿是')
+      console.log(firstLuckyMan.name)
+      this.cahceFirst = firstLuckyMan
+    },
     // 开始抽奖
     start(type) {
       this.type = type
       this.timer = setInterval(() => {
-        const randomId = this.randomId()
-        console.log(randomId)
-        this.activeTel = randomId
+        const randomTel = this.randomTel()
+        console.log(randomTel)
+        this.activeTel = randomTel
       }, 200)
     },
     stop(type) {
@@ -171,6 +236,17 @@ export default {
         this.luckFirst()
       }
     },
+    // 将获奖人员置为灰色
+    removeLuckyMan(tel) {
+      const newTelList = this.telList.filter(item => item !== tel)
+      this.telList = newTelList
+      console.log(this.telList)
+    },
+    // 抽奖
+    getLuckItem() {
+      const luckTel = this.getRandomTel()
+      console.log(luckTel)
+    },
     // 抽二等奖了
     luckSecend() {
       // const currentId = this.activeTel
@@ -181,12 +257,24 @@ export default {
       console.log('抽一等奖')
     },
     // 以当前的telList，随机生成一个id
-    randomId() {
-      const num = Math.floor(Math.random() * this.telList.length)
-      console.log(num)
-      const randomId = this.telList[num]
+    getRandomTel() {
+      let num = Math.floor(Math.random() * this.telList.length)
+      let randomTel = this.telList[num]
+      // 多试几次
+      if (randomTel === cahceFirst.telephone) {
+        num = Math.floor(Math.random() * this.telList.length)
+        randomTel = this.telList[num]
+      }
+      if (randomTel === cahceFirst.telephone) {
+        num = Math.floor(Math.random() * this.telList.length)
+        randomTel = this.telList[num]
+      }
+      if (randomTel === cahceFirst.telephone) {
+        num = Math.floor(Math.random() * this.telList.length)
+        randomTel = this.telList[num]
+      }
 
-      return randomId
+      return randomTel
     },
   },
 }
