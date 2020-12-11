@@ -43,7 +43,11 @@
           <!-- 操作 -->
           <el-form label-width="80px" label-positio="right">
             <el-form-item label="暂停登记" style="margin-top: 30px">
-              <el-button size="small" type="danger" @click="stopGet()" :disabled="isStopClick">暂停</el-button>
+              <el-button
+                size="small"
+                type="danger"
+                @click="stopGet()"
+                :disabled="isStopClick">暂停</el-button>
             </el-form-item>
             <el-form-item label="二等奖">
               <el-button
@@ -156,15 +160,12 @@ export default {
       type: null,
       // 抽奖循环
       timer: null,
-      // 抽奖个数
-      secendCount: 0,
       // 抽二等奖的操作
       luckSecendTimer: null,
       // 三等奖获奖数
       thirdList: [],
       // 二等奖获奖数
       secendList: [],
-      
     }
   },
   async mounted() {
@@ -175,7 +176,7 @@ export default {
   methods: {
     // 获取所有人的信息
     mockApi() {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         const list = this.mockList
         setTimeout(() => {
           resolve(list)
@@ -194,6 +195,7 @@ export default {
           friends.push(item)
         }
         telephones.push(item.telephone)
+        return null
       })
       console.log(result)
       this.firendList = friends
@@ -204,7 +206,7 @@ export default {
      * 停止登记
      * 1、直接生成一等奖
      */
-    stopGet () {
+    stopGet() {
       clearInterval(this.getTimer)
       this.isStopClick = true
       // 停止获取数据的时候，直接内定一等奖
@@ -261,15 +263,15 @@ export default {
       let num = Math.floor(Math.random() * this.telList.length)
       let randomTel = this.telList[num]
       // 多试几次
-      if (randomTel === cahceFirst.telephone) {
+      if (randomTel === this.cahceFirst.telephone) {
         num = Math.floor(Math.random() * this.telList.length)
         randomTel = this.telList[num]
       }
-      if (randomTel === cahceFirst.telephone) {
+      if (randomTel === this.cahceFirst.telephone) {
         num = Math.floor(Math.random() * this.telList.length)
         randomTel = this.telList[num]
       }
-      if (randomTel === cahceFirst.telephone) {
+      if (randomTel === this.cahceFirst.telephone) {
         num = Math.floor(Math.random() * this.telList.length)
         randomTel = this.telList[num]
       }

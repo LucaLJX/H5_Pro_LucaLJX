@@ -38,14 +38,12 @@ export const mockList = [
     name: '爱疯舞',
     // id: '',
     telephone: '34534',
-  }
-  ,
+  },
   {
     name: '访问',
     // id: '',
     telephone: '275374564434',
-  }
-  ,
+  },
   {
     name: '防蚊贴',
     // id: '',
@@ -94,14 +92,12 @@ export const mockList = [
     name: '讨好人',
     // id: '',
     telephone: '789303039',
-  }
-  ,
+  },
   {
     name: '同仁堂',
     // id: '',
     telephone: '0183758293',
-  }
-  ,
+  },
   {
     name: '后问',
     // id: '',
@@ -154,14 +150,12 @@ export const mockList = [
     name: '发我',
     // id: '',
     telephone: '57383929329',
-  }
-  ,
+  },
   {
     name: '我呸',
     // id: '',
     telephone: '664443432323',
-  }
-  ,
+  },
   {
     name: '了',
     // id: '',
@@ -269,21 +263,19 @@ export const mockList = [
     name: 'v比',
     // id: '',
     telephone: '169453923923',
-  }
-  ,
+  },
   {
     name: '欧文',
     // id: '',
     telephone: '12347238923923',
-  }
-  ,
+  },
   {
     name: '稍等',
     // id: '',
     telephone: '6434433923923',
-  }
+  },
 ]
 
+const mock = []
 
-
-
+export default mock
