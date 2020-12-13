@@ -31,7 +31,32 @@
         <el-card shadow="always" class="right">
           <el-divider>中奖名单</el-divider>
           <el-divider content-position="left">一等奖</el-divider>
+          <span v-show="!firstList.length">未抽出</span>
+          <div v-show="firstList.length">
+            <el-tag
+              v-for="(item, index) in secendList"
+              :key="index"
+              class="luckTag"
+            >{{ item.name }}</el-tag>
+          </div>
           <el-divider content-position="left">二等奖</el-divider>
+          <span v-show="!secendList.length">未抽出</span>
+          <div v-show="secendList.length">
+            <el-tag
+              v-for="(item, index) in secendList"
+              :key="index"
+              class="luckTag"
+            >{{ item.name }}</el-tag>
+          </div>
+          <el-divider content-position="left">三等奖</el-divider>
+          <span v-show="!thirdList.length">未抽出</span>
+          <div v-show="thirdList.length">
+            <el-tag
+              v-for="(item, index) in thirdList"
+              :key="index"
+              class="luckTag"
+            >{{ item.name }}</el-tag>
+          </div>
           <el-divider>操作区</el-divider>
           <!-- 进度条 -->
           <el-steps :space="200" :active="0" finish-status="success" align-center>
@@ -49,7 +74,7 @@
                 @click="stopGet()"
                 :disabled="isStopClick">暂停</el-button>
             </el-form-item>
-            <el-form-item label="二等奖">
+            <!-- <el-form-item label="二等奖">
               <el-button
                 :loading="isStart"
                 size="small"
@@ -61,20 +86,38 @@
                 type="default"
                 @click="stop(LUCK_TYPE.Secend)"
               >停</el-button>
-            </el-form-item>
-            <el-form-item label="一等奖">
+            </el-form-item> -->
+            <h3>当前抽取：一等奖</h3>
+            <el-form-item label="">
               <el-button
                 :loading="isStart"
                 size="small"
                 type="primary"
-                @click="start(LUCK_TYPE.FIRST)"
+                @click="start()"
               >开始</el-button>
-              <el-button size="small" type="default" @click="stop(LUCK_TYPE.FIRST)">停</el-button>
+              <el-button size="small" type="default" @click="stop()">停</el-button>
             </el-form-item>
           </el-form>
         </el-card>
       </div>
     </div>
+    <!-- 展示奖励弹窗 -->
+    <el-dialog
+      :title="luckDialog.title"
+      :visible.sync="luckDialog.visible"
+      width="35%"
+      :before-close="handleClose">
+      <span>{{ luckDialog.luckContent }}</span>
+      <div class="luckyContent">
+        <div class="luckyItem" v-for="(luckyItem, index) in luckDialog.luckList" :key="index">
+          <p class="luckyItemTitle">{{ luckyItem.name }}</p>
+          <p class="luckyItemContent">{{ luckyItem.telephone }}</p>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="luckDialog.visible = false">关闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -84,8 +127,9 @@ import './index.less'
 import { mockList } from './mock'
 
 const LUCK_TYPE = {
-  FIRST: 'FIRST', // 一等奖
-  Secend: 'Secend', // 二等奖
+  FIRST: '一等奖', // 一等奖
+  SECEND: '二等奖', // 二等奖
+  THIRD: '三等奖', // 三等奖
 }
 
 // 数量
@@ -130,6 +174,20 @@ const DEFAULT_FIRENDS = [
 export default {
   data() {
     return {
+      // 奖励弹窗--------------
+      luckDialog: {
+        visible: false,
+        title: '',
+        luckContent: '',
+        luckList: []
+      },
+      // 所有获奖名单弹窗
+      totalDialog: {
+        visible: false,
+        title: '',
+        luckContent: '',
+        luckList: []
+      },
       mockList,
       LUCK_TYPE,
       DEFAULT_FIRENDS,
@@ -142,6 +200,7 @@ export default {
       totalList: [], // 所有的参赛选手数据
       activeTel: 'id_22',
       telList: [], // 当前剩下的tel
+      randomList: [], // 用于抽奖的list，一等奖提前剔除
       // 抽奖轮询
       getTimer: null,
       // 是否点击过停止
@@ -153,19 +212,19 @@ export default {
       cahceFirst: null,
       // 一等奖
       firstList: [],
+      // -------------------二等奖
+      secendList: [],
+      // -------------------三等奖
+      thirdList: [],
       // ------------------- todo: 这里需要配置按钮的操作变量 分开，还是按照抽奖个数动态处理
       // 是否开始抽奖 true -- 开始抽奖 false -- 停止抽奖
       isStart: false,
       // 抽奖类型
-      type: null,
+      type: LUCK_TYPE.THIRD,
       // 抽奖循环
       timer: null,
       // 抽二等奖的操作
       luckSecendTimer: null,
-      // 三等奖获奖数
-      thirdList: [],
-      // 二等奖获奖数
-      secendList: [],
     }
   },
   async mounted() {
@@ -216,65 +275,99 @@ export default {
       const firstLuckyMan = this.firendList[randomNum]
       console.log('幸运儿是')
       console.log(firstLuckyMan.name)
+      const randomList = this.telList.filter(item => item !== firstLuckyMan.telephone)
+      this.randomList = randomList
       this.cahceFirst = firstLuckyMan
+      console.log(this.telList)
+      console.log(this.randomList)
     },
     // 开始抽奖
-    start(type) {
-      this.type = type
+    start() {
       this.timer = setInterval(() => {
-        const randomTel = this.randomTel()
+        const randomTel = this.getRandomTel()
         console.log(randomTel)
         this.activeTel = randomTel
       }, 200)
     },
-    stop(type) {
-      // 如果是停抽二等奖
-      if (type === LUCK_TYPE.Secend) {
-        this.luckSecendTimer = setInterval(() => {
-          this.luckSecend()
-        }, 2000)
+    stop() {
+      console.log(this.type)
+      clearInterval(this.timer)
+      if (this.type === LUCK_TYPE.THIRD) {
+        this.luckThirdDraw()
       }
-      if (type === LUCK_TYPE.FIRST) {
-        this.luckFirst()
+      if (this.type === LUCK_TYPE.SECEND) {
+        this.luckSecendDraw()
+      }
+      if (this.type === LUCK_TYPE.FIRST) {
+        this.luckFirstDraw()
+      }
+    },
+    // 抽三等奖
+    luckThirdDraw() {
+      let count = 0
+      let mathCount = 0
+      this.timer = setInterval(() => {
+        const randomTel = this.getRandomTel()
+        this.activeTel = randomTel
+        mathCount += 1
+        if (mathCount % 5 === 0) {
+          const luckItem = this.totalList.find(item => item.telephone === randomTel)
+          this.thirdList.push(luckItem)
+          count += 1
+          this.removeLuckyMan(randomTel)
+          if (count === this.thirdCount) {
+            clearInterval(this.timer)
+            // 展示三等奖
+            this.showLuckDialog(LUCK_TYPE.THIRD)
+            this.type = this.LUCK_TYPE.SECEND
+          }
+        }
+      }, 500)
+    },
+    // 展示某一奖项的获奖弹窗
+    showLuckDialog(type) {
+      switch (type) {
+        case this.LUCK_TYPE.THIRD:
+          // 展示三等奖
+          this.luckDialog = {
+            visible: true,
+            title: '三等奖获奖名单',
+            luckContent: '恭喜以下宾客获得三等奖！',
+            luckList: [...this.thirdList],
+          }
+          break
+        case this.LUCK_TYPE.SECEND:
+          // 展示二等奖
+          this.luckDialog = {
+            visible: true,
+            title: '二等奖获奖名单',
+            luckContent: '恭喜以下宾客获得二等奖！',
+            luckList: [...this.secendList],
+          }
+          break
+        case this.LUCK_TYPE.FIRST:
+          // 展示三等奖
+          this.luckDialog = {
+            visible: true,
+            title: '一等奖获奖名单',
+            luckContent: '恭喜获得一等奖的幸运儿！',
+            luckList: [...this.firendList],
+          }
+          break
       }
     },
     // 将获奖人员置为灰色
     removeLuckyMan(tel) {
       const newTelList = this.telList.filter(item => item !== tel)
+      const newRandomList = this.randomList.filter(item => item !== tel)
       this.telList = newTelList
+      this.randomList = newRandomList
       console.log(this.telList)
-    },
-    // 抽奖
-    getLuckItem() {
-      const luckTel = this.getRandomTel()
-      console.log(luckTel)
-    },
-    // 抽二等奖了
-    luckSecend() {
-      // const currentId = this.activeTel
-      // const count = this.secendCount
-    },
-    // 抽一等奖了
-    luckFirst() {
-      console.log('抽一等奖')
     },
     // 以当前的telList，随机生成一个id
     getRandomTel() {
-      let num = Math.floor(Math.random() * this.telList.length)
-      let randomTel = this.telList[num]
-      // 多试几次
-      if (randomTel === this.cahceFirst.telephone) {
-        num = Math.floor(Math.random() * this.telList.length)
-        randomTel = this.telList[num]
-      }
-      if (randomTel === this.cahceFirst.telephone) {
-        num = Math.floor(Math.random() * this.telList.length)
-        randomTel = this.telList[num]
-      }
-      if (randomTel === this.cahceFirst.telephone) {
-        num = Math.floor(Math.random() * this.telList.length)
-        randomTel = this.telList[num]
-      }
+      let num = Math.floor(Math.random() * this.randomList.length)
+      let randomTel = this.randomList[num]
 
       return randomTel
     },
