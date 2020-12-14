@@ -34,7 +34,7 @@
           <span v-show="!firstList.length">未抽出</span>
           <div v-show="firstList.length">
             <el-tag
-              v-for="(item, index) in secendList"
+              v-for="(item, index) in firstList"
               :key="index"
               class="luckTag"
             >{{ item.name }}</el-tag>
@@ -57,45 +57,45 @@
               class="luckTag"
             >{{ item.name }}</el-tag>
           </div>
-          <el-divider>操作区</el-divider>
+          <el-divider>抽奖进度</el-divider>
           <!-- 进度条 -->
-          <el-steps :space="200" :active="0" finish-status="success" align-center>
-            <el-step title="抽奖登记"></el-step>
+          <el-steps :space="200" :active="steps" finish-status="success" align-center>
+            <el-step title="登记"></el-step>
+            <el-step title="三等奖"></el-step>
             <el-step title="二等奖"></el-step>
             <el-step title="一等奖"></el-step>
-            <el-step title="抽奖完成"></el-step>
           </el-steps>
+          <el-divider>操作区</el-divider>
           <!-- 操作 -->
           <el-form label-width="80px" label-positio="right">
-            <el-form-item label="暂停登记" style="margin-top: 30px">
+            <el-form-item v-show="steps === 0 && !finish" label="暂停登记" style="margin-top: 30px">
               <el-button
                 size="small"
                 type="danger"
                 @click="stopGet()"
                 :disabled="isStopClick">暂停</el-button>
             </el-form-item>
-            <!-- <el-form-item label="二等奖">
+            <h3 v-show="steps !== 0 && !finish">当前抽取：{{ this.type }}</h3>
+            <el-form-item label="" v-show="steps !== 0 && !finish">
               <el-button
                 :loading="isStart"
-                size="small"
-                type="primary"
-                @click="start(LUCK_TYPE.Secend)"
-              >开始</el-button>
-              <el-button
-                size="small"
-                type="default"
-                @click="stop(LUCK_TYPE.Secend)"
-              >停</el-button>
-            </el-form-item> -->
-            <h3>当前抽取：一等奖</h3>
-            <el-form-item label="">
-              <el-button
-                :loading="isStart"
+                :disabled="isRandom"
                 size="small"
                 type="primary"
                 @click="start()"
               >开始</el-button>
-              <el-button size="small" type="default" @click="stop()">停</el-button>
+              <el-button
+                :disabled="isRandom"
+                size="small"
+                type="default"
+                @click="stop()">停</el-button>
+            </el-form-item>
+            <el-form-item label="" v-show="finish">
+              <el-button
+                size="small"
+                type="primary"
+                @click="showTotal()"
+              >查看所有获奖名单</el-button>
             </el-form-item>
           </el-form>
         </el-card>
@@ -105,9 +105,11 @@
     <el-dialog
       :title="luckDialog.title"
       :visible.sync="luckDialog.visible"
-      width="35%"
-      :before-close="handleClose">
-      <span>{{ luckDialog.luckContent }}</span>
+      width="500px">
+      <span
+        class="luckyText">
+        恭喜以下宾客获得<span style="color: #F56C6C;">{{ luckDialog.luckContent }}</span>！
+      </span>
       <div class="luckyContent">
         <div class="luckyItem" v-for="(luckyItem, index) in luckDialog.luckList" :key="index">
           <p class="luckyItemTitle">{{ luckyItem.name }}</p>
@@ -115,7 +117,46 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="luckDialog.visible = false">关闭</el-button>
+        <el-button type="primary" @click="closeLuckyDialog()">关闭</el-button>
+      </span>
+    </el-dialog>
+    <!-- 展示所有奖励弹窗 -->
+    <el-dialog
+      title="获奖名单"
+      :visible.sync="totalDialog.visible"
+      width="500px">
+      <span
+        class="luckyText">
+        <span style="color: #F56C6C;">{{ LUCK_TYPE.FIRST }}:</span>
+      </span>
+      <div class="luckyContent">
+        <div class="luckyItem" v-for="(luckyItem, index) in firstList" :key="index">
+          <p class="luckyItemTitle">{{ luckyItem.name }}</p>
+          <p class="luckyItemContent">{{ luckyItem.telephone }}</p>
+        </div>
+      </div>
+       <span
+        class="luckyText">
+        <span style="color: #F56C6C;">{{ LUCK_TYPE.SECEND }}:</span>
+      </span>
+      <div class="luckyContent">
+        <div class="luckyItem" v-for="(luckyItem, index) in secendList" :key="index">
+          <p class="luckyItemTitle">{{ luckyItem.name }}</p>
+          <p class="luckyItemContent">{{ luckyItem.telephone }}</p>
+        </div>
+      </div>
+       <span
+        class="luckyText">
+        <span style="color: #F56C6C;">{{ LUCK_TYPE.THIRD }}:</span>
+      </span>
+      <div class="luckyContent">
+        <div class="luckyItem" v-for="(luckyItem, index) in thirdList" :key="index">
+          <p class="luckyItemTitle">{{ luckyItem.name }}</p>
+          <p class="luckyItemContent">{{ luckyItem.telephone }}</p>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="closeTotal()">关闭</el-button>
       </span>
     </el-dialog>
   </div>
@@ -179,14 +220,11 @@ export default {
         visible: false,
         title: '',
         luckContent: '',
-        luckList: []
+        luckList: [],
       },
       // 所有获奖名单弹窗
       totalDialog: {
         visible: false,
-        title: '',
-        luckContent: '',
-        luckList: []
       },
       mockList,
       LUCK_TYPE,
@@ -196,6 +234,7 @@ export default {
       secendCount: SECEND_COUNT,
       thirdCount: THIRD_COUNT,
       luckyCount: 0,
+      steps: 0, // 抽奖进度
       // ----------登记阶段用到的变量
       totalList: [], // 所有的参赛选手数据
       activeTel: 'id_22',
@@ -219,6 +258,8 @@ export default {
       // ------------------- todo: 这里需要配置按钮的操作变量 分开，还是按照抽奖个数动态处理
       // 是否开始抽奖 true -- 开始抽奖 false -- 停止抽奖
       isStart: false,
+      isRandom: false,
+      finish: false,
       // 抽奖类型
       type: LUCK_TYPE.THIRD,
       // 抽奖循环
@@ -280,9 +321,11 @@ export default {
       this.cahceFirst = firstLuckyMan
       console.log(this.telList)
       console.log(this.randomList)
+      this.steps += 1
     },
     // 开始抽奖
     start() {
+      this.isStart = true
       this.timer = setInterval(() => {
         const randomTel = this.getRandomTel()
         console.log(randomTel)
@@ -291,6 +334,8 @@ export default {
     },
     stop() {
       console.log(this.type)
+      this.isStart = false
+      this.isRandom = true
       clearInterval(this.timer)
       if (this.type === LUCK_TYPE.THIRD) {
         this.luckThirdDraw()
@@ -319,8 +364,49 @@ export default {
             clearInterval(this.timer)
             // 展示三等奖
             this.showLuckDialog(LUCK_TYPE.THIRD)
-            this.type = this.LUCK_TYPE.SECEND
+            this.isRandom = false
           }
+        }
+      }, 500)
+    },
+    // 抽二等奖
+    luckSecendDraw() {
+      let count = 0
+      let mathCount = 0
+      this.timer = setInterval(() => {
+        const randomTel = this.getRandomTel()
+        this.activeTel = randomTel
+        mathCount += 1
+        if (mathCount % 5 === 0) {
+          const luckItem = this.totalList.find(item => item.telephone === randomTel)
+          this.secendList.push(luckItem)
+          count += 1
+          this.removeLuckyMan(randomTel)
+          if (count === this.secendCount) {
+            clearInterval(this.timer)
+            // 展示二等奖
+            this.showLuckDialog(LUCK_TYPE.SECEND)
+            this.isRandom = false
+          }
+        }
+      }, 500)
+    },
+    // 抽一等奖
+    luckFirstDraw() {
+      let mathCount = 0
+      this.timer = setInterval(() => {
+        const randomTel = this.getRandomTel()
+        this.activeTel = randomTel
+        mathCount += 1
+        if (mathCount === 5) {
+          clearInterval(this.timer)
+          setTimeout(() => {
+            this.activeTel = this.cahceFirst.telephone
+            this.firstList.push(this.cahceFirst)
+            this.showLuckDialog(this.LUCK_TYPE.FIRST)
+            this.isRandom = false
+            this.finish = true
+          }, 500)
         }
       }, 500)
     },
@@ -332,7 +418,7 @@ export default {
           this.luckDialog = {
             visible: true,
             title: '三等奖获奖名单',
-            luckContent: '恭喜以下宾客获得三等奖！',
+            luckContent: this.LUCK_TYPE.THIRD,
             luckList: [...this.thirdList],
           }
           break
@@ -341,7 +427,7 @@ export default {
           this.luckDialog = {
             visible: true,
             title: '二等奖获奖名单',
-            luckContent: '恭喜以下宾客获得二等奖！',
+            luckContent: this.LUCK_TYPE.SECEND,
             luckList: [...this.secendList],
           }
           break
@@ -350,11 +436,27 @@ export default {
           this.luckDialog = {
             visible: true,
             title: '一等奖获奖名单',
-            luckContent: '恭喜获得一等奖的幸运儿！',
-            luckList: [...this.firendList],
+            luckContent: this.LUCK_TYPE.FIRST,
+            luckList: [...this.firstList],
           }
           break
+        default:
       }
+    },
+    // 关闭弹窗
+    closeLuckyDialog() {
+      this.luckDialog = {
+        visible: false,
+        title: '',
+        luckContent: '',
+        luckList: [],
+      }
+      if (this.type === this.LUCK_TYPE.THIRD) {
+        this.type = this.LUCK_TYPE.SECEND
+      } else if (this.type === this.LUCK_TYPE.SECEND) {
+        this.type = this.LUCK_TYPE.FIRST
+      }
+      this.steps += 1
     },
     // 将获奖人员置为灰色
     removeLuckyMan(tel) {
@@ -366,10 +468,16 @@ export default {
     },
     // 以当前的telList，随机生成一个id
     getRandomTel() {
-      let num = Math.floor(Math.random() * this.randomList.length)
-      let randomTel = this.randomList[num]
+      const num = Math.floor(Math.random() * this.randomList.length)
+      const randomTel = this.randomList[num]
 
       return randomTel
+    },
+    closeTotal() {
+      this.totalDialog.visible = false
+    },
+    showTotal() {
+      this.totalDialog.visible = true
     },
   },
 }
