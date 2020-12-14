@@ -17,12 +17,12 @@
               <div
                 class="item_content"
                 :class="{
-                  'item_active': item.telephone === activeTel,
-                  'item_disabled': telList.indexOf(item.telephone) === -1
+                  'item_active': item.phone === activeTel,
+                  'item_disabled': telList.indexOf(item.phone) === -1
                 }"
               >
                 <p class="item_name">{{ item.name }}</p>
-                <p class="item_tel">{{ item.telephone }}</p>
+                <p class="item_tel">{{ item.phone }}</p>
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@
       <div class="luckyContent">
         <div class="luckyItem" v-for="(luckyItem, index) in luckDialog.luckList" :key="index">
           <p class="luckyItemTitle">{{ luckyItem.name }}</p>
-          <p class="luckyItemContent">{{ luckyItem.telephone }}</p>
+          <p class="luckyItemContent">{{ luckyItem.phone }}</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -132,7 +132,7 @@
       <div class="luckyContent">
         <div class="luckyItem" v-for="(luckyItem, index) in firstList" :key="index">
           <p class="luckyItemTitle">{{ luckyItem.name }}</p>
-          <p class="luckyItemContent">{{ luckyItem.telephone }}</p>
+          <p class="luckyItemContent">{{ luckyItem.phone }}</p>
         </div>
       </div>
        <span
@@ -142,7 +142,7 @@
       <div class="luckyContent">
         <div class="luckyItem" v-for="(luckyItem, index) in secendList" :key="index">
           <p class="luckyItemTitle">{{ luckyItem.name }}</p>
-          <p class="luckyItemContent">{{ luckyItem.telephone }}</p>
+          <p class="luckyItemContent">{{ luckyItem.phone }}</p>
         </div>
       </div>
        <span
@@ -152,7 +152,7 @@
       <div class="luckyContent">
         <div class="luckyItem" v-for="(luckyItem, index) in thirdList" :key="index">
           <p class="luckyItemTitle">{{ luckyItem.name }}</p>
-          <p class="luckyItemContent">{{ luckyItem.telephone }}</p>
+          <p class="luckyItemContent">{{ luckyItem.phone }}</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -179,7 +179,7 @@ const SECEND_COUNT = 5
 const THIRD_COUNT = 10
 
 /**
- * 以手机号（telephone 字段）为唯一判定值
+ * 以手机号（phone 字段）为唯一判定值
  * 1、增接口，手机号、姓名去重，若手机号已存在，则提示（是否修改名称）
  * 2、删接口手动调用
  * 3、查询按时间顺序一次性展示全量（时间倒序：修改时间最早在最前）
@@ -187,27 +187,27 @@ const THIRD_COUNT = 10
 
 const DEFAULT_FIRENDS = [
   {
-    telephone: '13921071265',
+    phone: '13921071265',
     name: '陈冰燕',
   },
   {
-    telephone: '17710785354',
+    phone: '17710785354',
     name: '刘晶鑫',
   },
   {
-    telephone: '15151548735',
+    phone: '15151548735',
     name: '陈康琰',
   },
   {
-    telephone: '15151548725',
+    phone: '15151548725',
     name: '张建',
   },
   {
-    telephone: '18221246182',
+    phone: '18221246182',
     name: '杨军义',
   },
   {
-    telephone: '18221246059',
+    phone: '18221246059',
     name: '顾於梅',
   },
 ]
@@ -269,11 +269,47 @@ export default {
     }
   },
   async mounted() {
-    this.getTimer = setInterval(() => {
-      this.getList()
-    }, 2000)
+    const luckStorage = window.localStorage.getItem('luckStorage')
+    if (luckStorage) {
+      this.formatStorage(luckStorage)
+    } else {
+      this.getTimer = setInterval(() => {
+        this.getList()
+      }, 2000)
+      const res = await this.getTotalList()
+      console.log('初次请求')
+      console.log(res)
+    }
   },
   methods: {
+    // 初始化已抽奖列表
+    formatStorage(luckStorage) {
+      try {
+        const obj = JSON.parse(luckStorage)
+        const { firstList, secendList, thirdList } = obj
+        this.firstList = firstList
+        this.secendList = secendList
+        this.thirdList = thirdList
+        this.showTotal()
+      } catch (e) {
+        window.localStorage.removeItem('luckStorage')
+        this.getTimer = setInterval(() => {
+          this.getList()
+        }, 2000)
+      }
+    },
+    // 获取登记列表
+    getTotalList() {
+      const { origin } = window.location
+      const host = origin.indexOf('localhost') === -1 ? origin : ''
+      return new Promise((resolve, reject) => {
+        this.axios.post(`${host}/lottery/user/list`).then(response => {
+          resolve(response.data)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
     // 获取所有人的信息
     mockApi() {
       return new Promise(resolve => {
@@ -288,18 +324,18 @@ export default {
       console.log('开始获取数据')
       const result = await this.mockApi()
       const friends = []
-      const telephones = []
+      const phoneList = []
       result.map(item => {
-        const friendItem = DEFAULT_FIRENDS.find(friend => friend.telephone === item.telephone)
+        const friendItem = DEFAULT_FIRENDS.find(friend => friend.phone === item.phone)
         if (friendItem) {
           friends.push(item)
         }
-        telephones.push(item.telephone)
+        phoneList.push(item.phone)
         return null
       })
       console.log(result)
       this.firendList = friends
-      this.telList = telephones
+      this.telList = phoneList
       this.totalList = result
     },
     /**
@@ -316,7 +352,7 @@ export default {
       const firstLuckyMan = this.firendList[randomNum]
       console.log('幸运儿是')
       console.log(firstLuckyMan.name)
-      const randomList = this.telList.filter(item => item !== firstLuckyMan.telephone)
+      const randomList = this.telList.filter(item => item !== firstLuckyMan.phone)
       this.randomList = randomList
       this.cahceFirst = firstLuckyMan
       console.log(this.telList)
@@ -356,7 +392,7 @@ export default {
         this.activeTel = randomTel
         mathCount += 1
         if (mathCount % 5 === 0) {
-          const luckItem = this.totalList.find(item => item.telephone === randomTel)
+          const luckItem = this.totalList.find(item => item.phone === randomTel)
           this.thirdList.push(luckItem)
           count += 1
           this.removeLuckyMan(randomTel)
@@ -378,7 +414,7 @@ export default {
         this.activeTel = randomTel
         mathCount += 1
         if (mathCount % 5 === 0) {
-          const luckItem = this.totalList.find(item => item.telephone === randomTel)
+          const luckItem = this.totalList.find(item => item.phone === randomTel)
           this.secendList.push(luckItem)
           count += 1
           this.removeLuckyMan(randomTel)
@@ -401,11 +437,17 @@ export default {
         if (mathCount === 5) {
           clearInterval(this.timer)
           setTimeout(() => {
-            this.activeTel = this.cahceFirst.telephone
+            this.activeTel = this.cahceFirst.phone
             this.firstList.push(this.cahceFirst)
             this.showLuckDialog(this.LUCK_TYPE.FIRST)
             this.isRandom = false
             this.finish = true
+            const luckStorage = {
+              firstList: this.firstList,
+              secendList: this.secendList,
+              thirdList: this.thirdList,
+            }
+            window.localStorage.setItem('luckStorage', JSON.stringify(luckStorage))
           }, 500)
         }
       }, 500)
