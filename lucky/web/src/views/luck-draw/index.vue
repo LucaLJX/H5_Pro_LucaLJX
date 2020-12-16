@@ -113,6 +113,13 @@
                 @click="showTotal()"
               >查看所有获奖名单</el-button>
             </el-form-item>
+            <el-form-item label="" v-show="finish">
+              <el-button
+                size="small"
+                type="primary"
+                @click="clearLuck()"
+              >清除抽奖结果</el-button>
+            </el-form-item>
           </el-form>
         </el-card>
       </div>
@@ -167,8 +174,8 @@
       </span>
       <div class="luckyContent">
         <div class="luckyItem" v-for="(luckyItem, index) in thirdList" :key="index">
-          <p class="luckyItemTitle">{{ luckyItem.name }}</p>
-          <p class="luckyItemContent">{{ luckyItem.phone }}</p>
+          <p class="luckyItemTitle">{{ luckyItem.code }}</p>
+          <p class="luckyItemContent">{{ luckyItem.name }}</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -182,6 +189,7 @@
 // import '../../style/luckDraw.css'
 import './index.less'
 import { mockList } from './mock'
+import { getHost } from '../../utils'
 
 const LUCK_TYPE = {
   FIRST: '一等奖', // 一等奖
@@ -219,8 +227,28 @@ const DEFAULT_FIRENDS = [
     name: '顾於梅',
   },
   {
-    phone: '17710785354',
-    name: 'liujingxin',
+    phone: '13427521270',
+    name: '黄琪评',
+  },
+  {
+    phone: '15351916299',
+    name: '陶心媛',
+  },
+  {
+    phone: '13921032145',
+    name: '史恋',
+  },
+  {
+    phone: '15152975326',
+    name: '贾亚芬',
+  },
+  {
+    phone: '15951333865',
+    name: '顾琪琦',
+  },
+  {
+    phone: '18612176068',
+    name: '闫冉',
   },
 ]
 
@@ -284,6 +312,8 @@ export default {
     const luckStorage = window.localStorage.getItem('luckStorage')
     if (luckStorage) {
       this.formatStorage(luckStorage)
+      this.steps = 5
+      this.finish = true
     } else {
       this.getTimer = setInterval(() => {
         this.getList()
@@ -291,6 +321,11 @@ export default {
     }
   },
   methods: {
+    // 清除抽奖结果
+    clearLuck() {
+      window.localStorage.removeItem('luckStorage')
+      window.location.reload()
+    },
     // 初始化已抽奖列表
     formatStorage(luckStorage) {
       try {
@@ -309,10 +344,8 @@ export default {
     },
     // 获取登记列表
     getTotalList() {
-      const { origin } = window.location
-      const host = origin.indexOf('localhost') === -1 ? origin : ''
       return new Promise((resolve, reject) => {
-        this.axios.post(`${host}/lottery/user/list`).then(response => {
+        this.axios.post(`${getHost()}/lottery/user/list`).then(response => {
           resolve(response.data)
         }).catch(e => {
           reject(e)
@@ -334,9 +367,11 @@ export default {
     },
     // 获取数据并赋值
     async getList() {
-      console.log('开始获取数据')
-      // const result = await this.mockApi()
-      const result = (await this.getTotalList()).data
+      // console.log('开始获取数据')
+      const res = await this.mockApi()
+      const result = [...res, ...this.DEFAULT_FIRENDS]
+      // const result = (await this.getTotalList()).data
+
       const friends = []
       const phoneList = []
       result.map(item => {
@@ -448,7 +483,9 @@ export default {
           clearInterval(this.timer)
           setTimeout(() => {
             this.activeTel = this.cahceFirst.phone
-            this.firstList.push(this.cahceFirst)
+            const luckItem = this.totalList.find(item => item.phone === this.cahceFirst.phone)
+            this.firstList.push(luckItem)
+            this.removeLuckyMan(this.cahceFirst.phone)
             this.showLuckDialog(this.LUCK_TYPE.FIRST)
             this.isRandom = false
             this.finish = true

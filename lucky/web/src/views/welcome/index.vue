@@ -39,6 +39,7 @@
 
 <script>
 // import 'vant/lib/index.css'
+import { getHost } from '../../utils'
 
 export default {
   data() {
@@ -50,6 +51,7 @@ export default {
   },
   mounted() {
     console.log('12')
+    getHost()
   },
   methods: {
     jumpCheckIn() {

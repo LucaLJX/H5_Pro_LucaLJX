@@ -46,6 +46,7 @@
 
 <script>
 import { Toast } from 'vant'
+import { getHost } from '../../utils'
 
 export default {
   data() {
@@ -86,10 +87,8 @@ export default {
       }
     },
     getCode(phone) {
-      const { origin } = window.location
-      const host = origin.indexOf('localhost') === -1 ? origin : ''
       return new Promise((resolve, reject) => {
-        this.axios.get(`${host}/lottery/user/detail/phone/${phone}`).then(response => {
+        this.axios.get(`${getHost()}/lottery/user/detail/phone/${phone}`).then(response => {
           const { data } = response.data
           resolve(data)
         }).catch(e => {

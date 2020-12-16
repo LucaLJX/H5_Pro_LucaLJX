@@ -29,6 +29,7 @@
 
 <script>
 import 'sass-rem/_rem.scss'
+import { getHost } from '../../utils'
 
 export default {
   data() {
@@ -49,10 +50,8 @@ export default {
   },
   methods: {
     getCode(phone) {
-      const { origin } = window.location
-      const host = origin.indexOf('localhost') === -1 ? origin : ''
       return new Promise((resolve, reject) => {
-        this.axios.get(`${host}/lottery/user/detail/phone/${phone}`).then(response => {
+        this.axios.get(`${getHost()}/lottery/user/detail/phone/${phone}`).then(response => {
           resolve(response.data.data)
         }).catch(e => {
           reject(e)

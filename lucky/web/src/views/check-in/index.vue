@@ -36,6 +36,7 @@
 <script>
 // import 'vant/lib/index.css'
 import { Toast } from 'vant'
+import { getHost } from '../../utils'
 
 export default {
   data() {
@@ -60,8 +61,7 @@ export default {
       if (!(/^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/.test(this.phone))) {
         return Toast.fail('请填写正确的手机号')
       }
-      const host = origin.indexOf('localhost') === -1 ? origin : ''
-      this.axios.post(`${host}/lottery/user/register`, {
+      this.axios.post(`${getHost()}/lottery/user/register`, {
         name: this.name,
         phone: this.phone,
       }).then(response => {
