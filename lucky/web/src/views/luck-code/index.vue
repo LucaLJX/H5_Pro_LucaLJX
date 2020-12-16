@@ -1,5 +1,24 @@
 <template>
   <div id='luckCode'>
+    <vue-particles
+      color="#dedede"
+      :particleOpacity="0.7"
+      :particlesNumber="80"
+      shapeType="circle"
+      :particleSize="4"
+      linesColor="#dedede"
+      :linesWidth="1"
+      :lineLinked="true"
+      :lineOpacity="0.4"
+      :linesDistance="150"
+      :moveSpeed="3"
+      :hoverEffect="true"
+      hoverMode="grab"
+      :clickEffect="true"
+      clickMode="push"
+      style="height: 100vh; width: 100%;"
+    >
+    </vue-particles>
     <div class='code-wrapper'>
       <h2>尊敬的{{ info.name }}</h2>
       <p>您的抽奖码是</p>

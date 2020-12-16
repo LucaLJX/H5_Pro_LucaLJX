@@ -1,10 +1,26 @@
 <template>
   <div>
     <!-- 新布局 -->
+     <vue-particles
+      color="#dedede"
+      :particleOpacity="0.7"
+      :particlesNumber="80"
+      shapeType="circle"
+      :particleSize="4"
+      linesColor="#dedede"
+      :linesWidth="1"
+      :lineLinked="true"
+      :lineOpacity="0.4"
+      :linesDistance="150"
+      :moveSpeed="3"
+      :hoverEffect="true"
+      hoverMode="grab"
+      :clickEffect="true"
+      clickMode="push"
+      style="height: 100vh; width: 100%;"
+    >
+    </vue-particles>
     <div id='newDraw'>
-      <div class="header">
-        抽奖
-      </div>
       <div class="content">
         <!-- 左边抽奖区域 -->
         <el-card shadow="always" class="left">
@@ -21,8 +37,8 @@
                   'item_disabled': telList.indexOf(item.phone) === -1
                 }"
               >
-                <p class="item_name">{{ item.name }}</p>
-                <p class="item_tel">{{ item.phone }}</p>
+                <p class="item_name">{{ item.code }}</p>
+                <!-- <p class="item_tel">{{ item.name }}</p> -->
               </div>
             </div>
           </div>
@@ -37,7 +53,7 @@
               v-for="(item, index) in firstList"
               :key="index"
               class="luckTag"
-            >{{ item.name }}</el-tag>
+            >{{ item.code }}&nbsp;&nbsp;{{ item.name }}</el-tag>
           </div>
           <el-divider content-position="left">二等奖</el-divider>
           <span v-show="!secendList.length">未抽出</span>
@@ -46,7 +62,7 @@
               v-for="(item, index) in secendList"
               :key="index"
               class="luckTag"
-            >{{ item.name }}</el-tag>
+            >{{ item.code }}&nbsp;&nbsp;{{ item.name }}</el-tag>
           </div>
           <el-divider content-position="left">三等奖</el-divider>
           <span v-show="!thirdList.length">未抽出</span>
@@ -55,7 +71,7 @@
               v-for="(item, index) in thirdList"
               :key="index"
               class="luckTag"
-            >{{ item.name }}</el-tag>
+            >{{ item.code }}&nbsp;&nbsp;{{ item.name }}</el-tag>
           </div>
           <el-divider>抽奖进度</el-divider>
           <!-- 进度条 -->
@@ -112,8 +128,8 @@
       </span>
       <div class="luckyContent">
         <div class="luckyItem" v-for="(luckyItem, index) in luckDialog.luckList" :key="index">
-          <p class="luckyItemTitle">{{ luckyItem.name }}</p>
-          <p class="luckyItemContent">{{ luckyItem.phone }}</p>
+          <p class="luckyItemTitle">{{ luckyItem.code }}</p>
+          <p class="luckyItemContent">{{ luckyItem.name }}</p>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -131,8 +147,8 @@
       </span>
       <div class="luckyContent">
         <div class="luckyItem" v-for="(luckyItem, index) in firstList" :key="index">
-          <p class="luckyItemTitle">{{ luckyItem.name }}</p>
-          <p class="luckyItemContent">{{ luckyItem.phone }}</p>
+          <p class="luckyItemTitle">{{ luckyItem.code }}</p>
+          <p class="luckyItemContent">{{ luckyItem.name }}</p>
         </div>
       </div>
        <span
@@ -141,8 +157,8 @@
       </span>
       <div class="luckyContent">
         <div class="luckyItem" v-for="(luckyItem, index) in secendList" :key="index">
-          <p class="luckyItemTitle">{{ luckyItem.name }}</p>
-          <p class="luckyItemContent">{{ luckyItem.phone }}</p>
+          <p class="luckyItemTitle">{{ luckyItem.code }}</p>
+          <p class="luckyItemContent">{{ luckyItem.name }}</p>
         </div>
       </div>
        <span
@@ -187,14 +203,6 @@ const THIRD_COUNT = 10
 
 const DEFAULT_FIRENDS = [
   {
-    phone: '13921071265',
-    name: '陈冰燕',
-  },
-  {
-    phone: '17710785354',
-    name: '刘晶鑫',
-  },
-  {
     phone: '15151548735',
     name: '陈康琰',
   },
@@ -209,6 +217,10 @@ const DEFAULT_FIRENDS = [
   {
     phone: '18221246059',
     name: '顾於梅',
+  },
+  {
+    phone: '17710785354',
+    name: 'liujingxin',
   },
 ]
 
@@ -276,9 +288,6 @@ export default {
       this.getTimer = setInterval(() => {
         this.getList()
       }, 2000)
-      const res = await this.getTotalList()
-      console.log('初次请求')
-      console.log(res)
     }
   },
   methods: {
@@ -293,7 +302,7 @@ export default {
         this.showTotal()
       } catch (e) {
         window.localStorage.removeItem('luckStorage')
-        this.getTimer = setInterval(() => {
+        this.getTimer = setInterval(async () => {
           this.getList()
         }, 2000)
       }
@@ -314,15 +323,20 @@ export default {
     mockApi() {
       return new Promise(resolve => {
         const list = this.mockList
+        const newList = list.map((item, index) => ({
+          ...item,
+          code: `A0${index}`,
+        }))
         setTimeout(() => {
-          resolve(list)
+          resolve(newList)
         }, 500)
       })
     },
     // 获取数据并赋值
     async getList() {
       console.log('开始获取数据')
-      const result = await this.mockApi()
+      // const result = await this.mockApi()
+      const result = (await this.getTotalList()).data
       const friends = []
       const phoneList = []
       result.map(item => {
@@ -348,15 +362,13 @@ export default {
       // 停止获取数据的时候，直接内定一等奖
       const friendsLength = this.firendList.length
       const randomNum = Math.floor(Math.random() * friendsLength)
-      console.log(randomNum)
       const firstLuckyMan = this.firendList[randomNum]
-      console.log('幸运儿是')
-      console.log(firstLuckyMan.name)
+      console.log(this.firendList)
+      console.log(firstLuckyMan)
+      console.log(randomNum)
       const randomList = this.telList.filter(item => item !== firstLuckyMan.phone)
       this.randomList = randomList
       this.cahceFirst = firstLuckyMan
-      console.log(this.telList)
-      console.log(this.randomList)
       this.steps += 1
     },
     // 开始抽奖
@@ -364,12 +376,10 @@ export default {
       this.isStart = true
       this.timer = setInterval(() => {
         const randomTel = this.getRandomTel()
-        console.log(randomTel)
         this.activeTel = randomTel
       }, 200)
     },
     stop() {
-      console.log(this.type)
       this.isStart = false
       this.isRandom = true
       clearInterval(this.timer)
@@ -506,7 +516,6 @@ export default {
       const newRandomList = this.randomList.filter(item => item !== tel)
       this.telList = newTelList
       this.randomList = newRandomList
-      console.log(this.telList)
     },
     // 以当前的telList，随机生成一个id
     getRandomTel() {

@@ -1,5 +1,24 @@
 <template>
   <div id="checkIn">
+    <vue-particles
+      color="#dedede"
+      :particleOpacity="0.7"
+      :particlesNumber="80"
+      shapeType="circle"
+      :particleSize="4"
+      linesColor="#dedede"
+      :linesWidth="1"
+      :lineLinked="true"
+      :lineOpacity="0.4"
+      :linesDistance="150"
+      :moveSpeed="3"
+      :hoverEffect="true"
+      hoverMode="grab"
+      :clickEffect="true"
+      clickMode="push"
+      style="height: 100vh; width: 100%;"
+    >
+    </vue-particles>
     <div class="wrapper">
       <h3>幸运抽奖</h3>
       <div class="button-wrapper">
@@ -8,7 +27,11 @@
           type='info'
           size='small'
           @click="jumpCheckIn()">抽奖登记</van-button>
-        <van-button class="sign-button" type='info' size='small'>查看我的抽奖码</van-button>
+        <van-button
+          class="sign-button"
+          type='info'
+          size='small'
+          @click="jumpCheckCode()">查看我的抽奖码</van-button>
       </div>
     </div>
   </div>
@@ -32,6 +55,9 @@ export default {
     jumpCheckIn() {
       this.$router.push('/checkIn')
     },
+    jumpCheckCode() {
+      this.$router.push('/checkCode')
+    },
   },
 }
 </script>
@@ -41,6 +67,9 @@ export default {
   min-height: 100vh;
   width: 100%;
   padding-top: 4rem;
+  position: absolute;
+  top: 0;
+  left: 0;
   h3 {
     height: 3rem;
     text-align: center;

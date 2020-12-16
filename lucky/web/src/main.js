@@ -1,3 +1,4 @@
+import VueParticles from 'vue-particles'
 import Vue from 'vue'
 import Vant from 'vant'
 import axios from 'axios'
@@ -14,6 +15,7 @@ Vue.config.productionTip = false
 Vue.use(Vant)
 Vue.use(ElementUI)
 Vue.use(VueAxios, axios)
+Vue.use(VueParticles)
 
 new Vue({
   router,

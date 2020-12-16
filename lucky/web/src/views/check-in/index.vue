@@ -1,5 +1,24 @@
 <template>
   <div id="checkIn">
+    <vue-particles
+      color="#dedede"
+      :particleOpacity="0.7"
+      :particlesNumber="80"
+      shapeType="circle"
+      :particleSize="4"
+      linesColor="#dedede"
+      :linesWidth="1"
+      :lineLinked="true"
+      :lineOpacity="0.4"
+      :linesDistance="150"
+      :moveSpeed="3"
+      :hoverEffect="true"
+      hoverMode="grab"
+      :clickEffect="true"
+      clickMode="push"
+      style="height: 100vh; width: 100%;"
+    >
+    </vue-particles>
     <div class="wrapper">
       <h3>抽奖登记</h3>
       <!-- 注册页面 -->
@@ -48,12 +67,15 @@ export default {
       }).then(response => {
         console.log(response)
         Toast.success('登记成功')
-        this.$router.push({
-          path: '/luckCode',
-          query: {
-            phone: this.phone,
-          },
-        })
+        setTimeout(() => {
+          Toast.clear()
+          this.$router.push({
+            path: '/checkCode',
+            query: {
+              phone: this.phone,
+            },
+          })
+        }, 800)
       }).catch(e => {
         console.log(e)
         Toast.fail('登记失败，请重试')
@@ -65,7 +87,10 @@ export default {
 
 <style lang="less" scoped>
 .wrapper {
-  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
   width: 100%;
   padding-top: 4rem;
   h3 {
