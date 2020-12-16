@@ -108,6 +108,7 @@
             </el-form-item>
             <el-form-item label="" v-show="finish">
               <el-button
+                style="margin: auto;"
                 size="small"
                 type="primary"
                 @click="showTotal()"
@@ -115,6 +116,7 @@
             </el-form-item>
             <el-form-item label="" v-show="finish">
               <el-button
+                style="margin: auto;"
                 size="small"
                 type="primary"
                 @click="clearLuck()"

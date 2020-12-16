@@ -36,7 +36,7 @@
       </transition>
       <transition name="van-slide-right">
         <div class="wrapper" v-show="!isCheck">
-          <h3>我的抽奖码</h3>
+          <h3>抽奖码</h3>
           <p>您的抽奖码是：{{ code }}</p>
         </div>
       </transition>

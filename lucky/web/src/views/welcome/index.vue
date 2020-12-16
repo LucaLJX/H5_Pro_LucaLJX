@@ -66,13 +66,13 @@ export default {
 
 <style lang="less" scoped>
 .wrapper {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
-  padding-top: 4rem;
   position: absolute;
   top: 0;
   left: 0;
   h3 {
+    margin-top: 4rem;
     height: 3rem;
     text-align: center;
   }
